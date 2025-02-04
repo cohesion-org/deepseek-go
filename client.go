@@ -22,6 +22,14 @@ func NewClient(AuthToken string) *Client {
 	}
 }
 
+// NewAzureClient creates a new client for Azure API
+func NewAzureClient(authToken string) *Client {
+	return &Client{
+		AuthToken: authToken,
+		BaseURL:   "https://models.inference.ai.azure.com",
+	}
+}
+
 // CreateChatCompletion sends a chat completion request and returns the generated response.
 func (c *Client) CreateChatCompletion(
 	ctx context.Context,

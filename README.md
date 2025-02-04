@@ -44,6 +44,10 @@ Before using the library, ensure you have:
   Usage: `Model: deepseek.DeepSeekReasoner`. <br/>
   **Note:** The [reasoner](https://api-docs.deepseek.com/guides/reasoning_model) requires unique conditions. Please refer to this issue [#8](https://github.com/cohesion-org/deepseek-go/issues/8). 
 
+- **Azure DeepSeekR1**  
+  Same as `deepseek-reasoner`. Its Just provided by Azure . <br/>
+  Usage: `Model: deepseek.AzureDeepSeekR1`
+
 <details open>
 <summary> Chat </summary>
 
@@ -69,6 +73,46 @@ func main() {
 	// Create a chat completion request
 	request := &deepseek.ChatCompletionRequest{
 		Model: deepseek.DeepSeekChat,
+		Messages: []deepseek.ChatCompletionMessage{
+			{Role: constants.ChatMessageRoleSystem, Content: "Answer every question using slang."},
+			{Role: constants.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
+		},
+	}
+
+	// Send the request and handle the response
+	ctx := context.Background()
+	response, err := client.CreateChatCompletion(ctx, request)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Print the response
+	fmt.Println("Response:", response.Choices[0].Message.Content)
+}
+```
+
+Using Azure:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+
+	deepseek "github.com/cohesion-org/deepseek-go"
+	constants "github.com/cohesion-org/deepseek-go/constants"
+)
+
+func main() {
+	// Set up the Deepseek client
+    client := deepseek.NewAzureClient(os.Getenv("YOUR_TOKEN"))
+
+	// Create a chat completion request
+	request := &deepseek.ChatCompletionRequest{
+		Model: deepseek.AzureDeepSeekR1,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: constants.ChatMessageRoleSystem, Content: "Answer every question using slang."},
 			{Role: constants.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},

@@ -16,6 +16,7 @@ const (
 	DeepSeekChat     = "deepseek-chat"
 	DeepSeekCoder    = "deepseek-coder"
 	DeepSeekReasoner = "deepseek-reasoner"
+	AzureDeepSeekR1  = "DeepSeek-R1"
 )
 
 type Model struct {
