@@ -2,6 +2,7 @@ package deepseek
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/cohesion-org/deepseek-go/constants"
 )
@@ -13,6 +14,26 @@ const (
 	ChatMessageRoleUser = constants.ChatMessageRoleUser
 	// ChatMessageRoleAssistant is the role of an assistant message
 	ChatMessageRoleAssistant = constants.ChatMessageRoleAssistant
+
+	ConstChatMaxTokensMin     = 1
+	ConstChatMaxTokensDefault = 4096
+	ConstChatMaxTokensMax     = 8192
+
+	ConstChatPresencePenaltyMin     = -2
+	ConstChatPresencePenaltyDefault = 0
+	ConstChatPresencePenaltyMax     = 2
+
+	ConstChatFrequencyPenaltyMin     = -2
+	ConstChatFrequencyPenaltyDefault = 0
+	ConstChatFrequencyPenaltyMax     = 2
+
+	ConstChatTemperatureDefault = 1
+	ConstChatTemperatureMax     = 2
+
+	ConstChatTopPDefault = 1
+	ConstChatTopPMax     = 1
+
+	ConstChatTopLogprobsMax = 20
 )
 
 var (
@@ -83,4 +104,126 @@ type ChatCompletionRequest struct {
 	LogProbs         bool                    `json:"logprobs,omitempty"`          // Whether to return log probabilities of the most likely tokens (optional).
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // The number of top most likely tokens to return log probabilities for (optional).
 	JSONMode         bool                    `json:"json,omitempty"`              // [deepseek-go feature] Optional: Enable JSON mode. If you're using the JSON mode, please mention "json" anywhere in your prompt, and also include the JSON schema in the request.
+}
+
+type ChatCompletionRequestOption func(*ChatCompletionRequest)
+
+func NewDefaultChatCompletionRequest(model string, messages []ChatCompletionMessage,
+	opts ...ChatCompletionRequestOption) *ChatCompletionRequest {
+
+	locChatCompletionReq := &ChatCompletionRequest{
+		Model:            model,
+		Messages:         messages,
+		MaxTokens:        ConstChatMaxTokensDefault,
+		Temperature:      ConstChatTemperatureDefault,
+		TopP:             ConstChatTopPDefault,
+		PresencePenalty:  ConstChatPresencePenaltyDefault,
+		FrequencyPenalty: ConstChatFrequencyPenaltyDefault,
+	}
+	for _, o := range opts {
+		o(locChatCompletionReq)
+	}
+	return locChatCompletionReq
+}
+
+func WithChatModel(model string, messages []ChatCompletionMessage) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.Model = model
+		r.Messages = messages
+	}
+}
+
+func WithChatMaxTokens(maxTokens int) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.MaxTokens = maxTokens
+	}
+}
+
+func WithChatTemperature(temperature float32) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.Temperature = temperature
+	}
+}
+
+func WithChatTopP(topP float32) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.TopP = topP
+	}
+}
+
+func WithChatPresencePenalty(presencePenalty float32) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.PresencePenalty = presencePenalty
+	}
+}
+
+func WithChatFrequencyPenalty(frequencyPenalty float32) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.FrequencyPenalty = frequencyPenalty
+	}
+}
+
+func WithChatStop(stop []string) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.Stop = stop
+	}
+}
+
+func WithChatLogprobs(logprobs bool) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.LogProbs = logprobs
+	}
+}
+
+func WithChatTopLogProbs(topLogProbs int) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.TopLogProbs = topLogProbs
+	}
+}
+
+func WithChatJSONMode(jsonMode bool) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.JSONMode = jsonMode
+	}
+}
+
+func WithChatResponseFormat(responseFormat *ResponseFormat) ChatCompletionRequestOption {
+	return func(r *ChatCompletionRequest) {
+		r.ResponseFormat = responseFormat
+	}
+}
+
+func CheckChatCompletionRequest(request *ChatCompletionRequest) error {
+	if request == nil {
+		return fmt.Errorf("request cannot be nil")
+	}
+	if request.Model == "" {
+		return fmt.Errorf("model cannot be empty")
+	}
+	if len(request.Messages) == 0 {
+		return fmt.Errorf("messages cannot be empty")
+	}
+	if request.MaxTokens <= ConstChatMaxTokensMin {
+		return fmt.Errorf("max tokens must be > 1")
+	}
+	if request.MaxTokens > ConstChatMaxTokensMax {
+		return fmt.Errorf("max tokens must be <= 4000")
+	}
+	if request.FrequencyPenalty < ConstChatFrequencyPenaltyMin {
+		return fmt.Errorf("frequency penalty must be >= %v", ConstChatFrequencyPenaltyMin)
+	}
+	if request.FrequencyPenalty > ConstChatFrequencyPenaltyMax {
+		return fmt.Errorf("frequency penalty must be < =%v", ConstChatFrequencyPenaltyMax)
+	}
+	if request.TopLogProbs > ConstChatTopLogprobsMax {
+		return fmt.Errorf("logprobs must be <= %v", ConstChatTopLogprobsMax)
+	}
+	if request.Temperature > ConstChatTemperatureMax {
+		return fmt.Errorf("temperature must be <= %v", ConstChatTemperatureMax)
+	}
+	if request.TopP > ConstChatTopPMax {
+		return fmt.Errorf("top p must be <= %v", ConstChatTopPMax)
+	}
+
+	return nil
 }

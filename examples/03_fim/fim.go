@@ -12,10 +12,7 @@ import (
 // FIM demonstrates how to use the FIM API for FIM completion.
 func FIM() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
-	request := &deepseek.FIMCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
-		Prompt: "def add(a, b):",
-	}
+	request := deepseek.NewDefaultFIMCompletionRequest(deepseek.DeepSeekChat, "def add(a, b):")
 	ctx := context.Background()
 	response, err := client.CreateFIMCompletion(ctx, request)
 	if err != nil {

@@ -12,12 +12,12 @@ import (
 // EstimateTokens demonstrates how to estimate the tokens used for a request.
 func EstimateTokens() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	request := deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "The text to evaluate the time is: Who is the greatest singer in the world?"},
 		},
-	}
+	)
 	ctx := context.Background()
 
 	tokens := deepseek.EstimateTokensFromMessages(request)

@@ -67,21 +67,20 @@ import (
 	"os"
 
 	deepseek "github.com/cohesion-org/deepseek-go"
-	
 )
 
 func main() {
 	// Set up the Deepseek client
-    client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
+	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 
 	// Create a chat completion request
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	request := deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Answer every question using slang."},
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
 		},
-	}
+	)
 
 	// Send the request and handle the response
 	ctx := context.Background()
@@ -93,6 +92,7 @@ func main() {
 	// Print the response
 	fmt.Println("Response:", response.Choices[0].Message.Content)
 }
+
 ```
 </details>
 
@@ -125,13 +125,13 @@ func main() {
     client := deepseek.NewClient(os.Getenv("PROVIDER_API_KEY"), baseURL)
 
 	// Create a chat completion request
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.AzureDeepSeekR1,
+	request := deepseek.NewDefaultChatCompletionRequest(
+		deepseek.AzureDeepSeekR1,
 		// Model: deepseek.OpenRouterDeepSeekR1,
-		Messages: []deepseek.ChatCompletionMessage{
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
 		},
-	}
+	)
 
 	// Send the request and handle the response
 	ctx := context.Background()
@@ -155,18 +155,18 @@ Note: If you wish to use other providers that are not supported by us, you can s
 	<strong> You just need to extend the ChatCompletionMessage with the supported parameters. </strong>
 
 ```go
-	request := &deepseek.ChatCompletionRequest{
+	request := deepseek.NewDefaultChatCompletionRequest(
 		Model: deepseek.DeepSeekChat,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "What is the meaning of deepseek"},
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Answer every question using slang"},
 		},
-		Temperature: 1.0,
-		Stop:        []string{"yo", "hello"},
-		ResponseFormat: &deepseek.ResponseFormat{
-			Type: "text",
-		},
-	}
+        deepseek.WithChatTemperature(1.0),
+		deepseek.WithChatStop([]string{"yo", "hello"}),
+		deepseek.WithChatResponseFormat(&deepseek.ResponseFormat{
+            Type: "text",
+		}),
+    )
 ```
 
 </details>
@@ -215,10 +215,7 @@ func MultiChat() {
 		Content: "Who was the one in the previous term.",
 	})
 
-	response2, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
-		Messages: messages,
-	})
+	response2, err := client.CreateChatCompletion(ctx, deepseek.NewDefaultChatCompletionRequest(deepseek.DeepSeekChat, messages))
 	if err != nil {
 		log.Fatalf("Round 2 failed: %v", err)
 	}
@@ -255,13 +252,11 @@ import (
 
 func main() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
-	request := &deepseek.StreamChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	request := deepseek.NewDefaultStreamChatCompletionRequest(
+		 deepseek.DeepSeekChat,
+		 []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Just testing if the streaming feature is working or not!"},
-		},
-		Stream: true,
-	}
+		})
 	ctx := context.Background()
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
@@ -348,13 +343,12 @@ This is adpated from [the  Deepseek's estimation](https://api-docs.deepseek.com/
 ```go
 func Estimation() {
 	client := deepseek.NewClient("DEEPSEEK_API_KEY"))
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	request := deepseek.NewDefaultChatCompletionRequest(
+		 deepseek.DeepSeekChat,
+		 []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Just respond with the time it might take you to complete this request."},
 			{Role: deepseek.ChatMessageRoleUser, Content: "The text to evaluate the time is: Who is the greatest singer in the world?"},
-		},
-	}
+		})
 	ctx := context.Background()
 
 	tokens := deepseek.EstimateTokensFromMessages(request)
@@ -413,13 +407,12 @@ func JsonMode() {
 	Please provide the JSON in the following format: { "books": [...] }
 	Example: {"isbn": "978-0321765723", "title": "The Lord of the Rings", "author": "J.R.R. Tolkien", "genre": "Fantasy", "publication_year": 1954, "available": true}`
 
-	resp, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model: "mistralai/codestral-2501", // Or another suitable model
-		Messages: []deepseek.ChatCompletionMessage{
+	resp, err := client.CreateChatCompletion(ctx, deepseek.NewDefaultChatCompletionRequest(
+		"mistralai/codestral-2501", // Or another suitable model
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: prompt},
 		},
-		JSONMode: true,
-	})
+		deepseek.WithChatJSONMode(true)))
 	if err != nil {
 		log.Fatalf("Failed to create chat completion: %v", err)
 	}
@@ -496,10 +489,10 @@ import (
 
 func FIM() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
-	request := &deepseek.FIMCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
-		Prompt: "def add(a, b):",
-	}
+	request := deepseek.NewDefaultFIMCompletionRequest(
+		deepseek.DeepSeekChat,
+		"def add(a, b):",
+    )
 	ctx := context.Background()
 	response, err := client.CreateFIMCompletion(ctx, request)
 	if err != nil {
@@ -535,14 +528,14 @@ func ChatPrefix() {
 
 	ctx := context.Background()
 
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	request := deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Please write quick sort code"},
 			{Role: deepseek.ChatMessageRoleAssistant, Content: "```python", Prefix: true},
 		},
-		Stop: []string{"```"}, // Stop the prefix when the assistant sends the closing triple backticks
-	}
+		deepseek.WithChatStop([]string{"```"}), // Stop the prefix when the assistant sends the closing triple backticks
+    )
 	response, err := client.CreateChatCompletion(ctx, request)
 	if err != nil {
 		log.Fatalf("error: %v", err)

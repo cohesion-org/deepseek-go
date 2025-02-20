@@ -17,10 +17,10 @@ func MultiChat() {
 	}}
 
 	// Round 1: First API call
-	response1, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
-		Messages: messages,
-	})
+	response1, err := client.CreateChatCompletion(ctx, deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		messages,
+	))
 	if err != nil {
 		log.Fatalf("Round 1 failed: %v", err)
 	}
@@ -38,10 +38,10 @@ func MultiChat() {
 		Content: "Who was the one in the previous term.",
 	})
 
-	response2, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
-		Messages: messages,
-	})
+	response2, err := client.CreateChatCompletion(ctx, deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		messages,
+	))
 	if err != nil {
 		log.Fatalf("Round 2 failed: %v", err)
 	}

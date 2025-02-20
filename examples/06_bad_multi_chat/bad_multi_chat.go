@@ -20,10 +20,10 @@ func BadMultiChat() {
 		Content: "What's the highest mountain in the world? One word response only.",
 	}}
 
-	response1, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
-		Messages: messages,
-	})
+	response1, err := client.CreateChatCompletion(ctx, deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		messages,
+	))
 	if err != nil {
 		log.Fatalf("Round 1 failed: %v", err)
 	}
@@ -40,10 +40,10 @@ func BadMultiChat() {
 		Content: "What is the second?",
 	})
 
-	response2, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
-		Messages: messages,
-	})
+	response2, err := client.CreateChatCompletion(ctx, deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		messages,
+	))
 	if err != nil {
 		log.Fatalf("Round 2 failed: %v", err)
 	}

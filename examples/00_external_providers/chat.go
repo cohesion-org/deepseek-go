@@ -27,13 +27,13 @@ func ExternalProviders() {
 	client := deepseek.NewClient(os.Getenv("PROVIDER_API_KEY"), baseURL)
 
 	// Create a chat completion request
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.AzureDeepSeekR1,
+	request := deepseek.NewDefaultChatCompletionRequest(
+		deepseek.AzureDeepSeekR1,
 		// Model: deepseek.OpenRouterDeepSeekR1,
-		Messages: []deepseek.ChatCompletionMessage{
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
 		},
-	}
+	)
 
 	// Send the request and handle the response
 	ctx := context.Background()

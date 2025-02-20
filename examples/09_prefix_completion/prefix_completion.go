@@ -19,14 +19,14 @@ func ChatPrefix() {
 
 	ctx := context.Background()
 
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	request := deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Please write quick sort code"},
 			{Role: deepseek.ChatMessageRoleAssistant, Content: "```python\n", Prefix: true},
 		},
-		Stop: []string{"```"}, // Stop the prefix when the assistant sends the closing triple backticks
-	}
+		deepseek.WithChatStop([]string{"```"}), // Stop the prefix when the assistant sends the closing triple backticks
+	)
 	response, err := client.CreateChatCompletion(ctx, request)
 	if err != nil {
 		log.Fatalf("error: %v", err)
@@ -61,15 +61,15 @@ func ChatPrefixWithJsonMode() {
 	Please provide the JSON in the following format: { "books": [...] }
 	Example: {"isbn": "978-0321765723", "title": "The Lord of the Rings", "author": "J.R.R. Tolkien", "genre": "Fantasy", "publication_year": 1954, "available": true}`
 
-	resp, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	resp, err := client.CreateChatCompletion(ctx, deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: prompt},
 			{Role: deepseek.ChatMessageRoleAssistant, Content: "```json\n", Prefix: true},
 		},
-		Stop:     []string{"```"}, // Stop the prefix when the assistant sends the closing triple backticks
-		JSONMode: true,
-	})
+		deepseek.WithChatStop([]string{"```"}), // Stop the prefix when the assistant sends the closing triple backticks
+		deepseek.WithChatJSONMode(true),
+	))
 	if err != nil {
 		log.Fatalf("Failed to create chat completion: %v", err)
 	}

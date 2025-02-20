@@ -28,13 +28,12 @@ func TestChatPrefixCompletion(t *testing.T) {
 	}{
 		{
 			name: "basic prefix completion",
-			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeepSeekChat,
-				Messages: []deepseek.ChatCompletionMessage{
+			req: deepseek.NewDefaultChatCompletionRequest(
+				deepseek.DeepSeekChat,
+				[]deepseek.ChatCompletionMessage{
 					{Role: constants.ChatMessageRoleUser, Content: "Please write quick sort code"},
 					{Role: constants.ChatMessageRoleAssistant, Content: "```python\n", Prefix: true},
-				},
-			},
+				}),
 			wantErr: false,
 			validateRes: func(t *testing.T, res *deepseek.ChatCompletionResponse) {
 				assert.NotEmpty(t, res.Choices[0].Message.Content)
@@ -42,13 +41,13 @@ func TestChatPrefixCompletion(t *testing.T) {
 		},
 		{
 			name: "prefix with reasoner and reasoning_content",
-			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeepSeekReasoner,
-				Messages: []deepseek.ChatCompletionMessage{
+			req: deepseek.NewDefaultChatCompletionRequest(
+				deepseek.DeepSeekReasoner,
+				[]deepseek.ChatCompletionMessage{
 					{Role: constants.ChatMessageRoleUser, Content: "Please write quick sort code"},
 					{Role: constants.ChatMessageRoleAssistant, Content: "```python\n", Prefix: true, ReasoningContent: string(reasoningContent)},
 				},
-			},
+			),
 			wantErr: false,
 			validateRes: func(t *testing.T, res *deepseek.ChatCompletionResponse) {
 				assert.NotEmpty(t, res.Choices[0].Message.Content)
@@ -56,10 +55,10 @@ func TestChatPrefixCompletion(t *testing.T) {
 		},
 		{
 			name: "empty messages",
-			req: &deepseek.ChatCompletionRequest{
-				Model:    deepseek.DeepSeekChat,
-				Messages: []deepseek.ChatCompletionMessage{},
-			},
+			req: deepseek.NewDefaultChatCompletionRequest(
+				deepseek.DeepSeekChat,
+				[]deepseek.ChatCompletionMessage{},
+			),
 			wantErr: true,
 		},
 		{

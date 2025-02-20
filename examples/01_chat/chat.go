@@ -11,13 +11,13 @@ import (
 
 func Chat() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
-	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	request := deepseek.NewDefaultChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		[]deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Answer every question using slang"},
 		},
-	}
+	)
 	ctx := context.Background()
 	response, err := client.CreateChatCompletion(ctx, request)
 	if err != nil {

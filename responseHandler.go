@@ -84,6 +84,11 @@ func HandleChatCompletionResponse(resp *http.Response) (*ChatCompletionResponse,
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("failed to close response body: %s\n", err)
+		}
+	}()
 
 	var parsedResponse ChatCompletionResponse
 	if err := json.Unmarshal(body, &parsedResponse); err != nil {
@@ -102,6 +107,11 @@ func HandleFIMCompletionRequest(resp *http.Response) (*FIMCompletionResponse, er
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("failed to close response body: %s\n", err)
+		}
+	}()
 
 	var parsedResponse FIMCompletionResponse
 	if err := json.Unmarshal(body, &parsedResponse); err != nil {

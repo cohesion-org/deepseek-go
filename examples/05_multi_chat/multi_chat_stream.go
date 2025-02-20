@@ -54,12 +54,8 @@ func MultiChatStream() {
 
 // Helper function to handle streaming chat completion. Just returns the final message for this example.
 func streamChatCompletion(ctx context.Context, client *deepseek.Client, messages []deepseek.ChatCompletionMessage) (string, error) {
-	request := &deepseek.StreamChatCompletionRequest{
-		Model:       deepseek.DeepSeekChat,
-		Messages:    messages,
-		Stream:      true,
-		Temperature: 1.5,
-	}
+	request := deepseek.NewDefaultStreamChatCompletionRequest(deepseek.DeepSeekChat, messages,
+		deepseek.WithStreamChatTemperature(1.5))
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
