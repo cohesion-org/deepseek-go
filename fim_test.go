@@ -23,39 +23,27 @@ func TestCreateFIMCompletion(t *testing.T) {
 		validateRes func(t *testing.T, res *deepseek.FIMCompletionResponse)
 	}{
 		{
-			name: "basic FIM completion",
-			req: &deepseek.FIMCompletionRequest{
-				Model:  deepseek.DeepSeekChat,
-				Prompt: "func main() {\n    fmt.Println(\"hel",
-			},
+			name:    "basic FIM completion",
+			req:     deepseek.NewDefaultFIMCompletionRequest(deepseek.DeepSeekChat, "func main() {\n    fmt.Println(\"hel"),
 			wantErr: false,
 			validateRes: func(t *testing.T, res *deepseek.FIMCompletionResponse) {
 				assert.NotEmpty(t, res.Choices[0].Text)
 			},
 		},
 		{
-			name: "empty prompt",
-			req: &deepseek.FIMCompletionRequest{
-				Model:  deepseek.DeepSeekChat,
-				Prompt: "",
-			},
+			name:    "empty prompt",
+			req:     deepseek.NewDefaultFIMCompletionRequest(deepseek.DeepSeekChat, ""),
 			wantErr: true,
 		},
 		{
-			name: "invalid model",
-			req: &deepseek.FIMCompletionRequest{
-				Model:  "invalid-model-123",
-				Prompt: "some code",
-			},
+			name:    "invalid model",
+			req:     deepseek.NewDefaultFIMCompletionRequest("invalid-model-123", "some code"),
 			wantErr: true,
 		},
 		{
 			name: "max tokens exceeded",
-			req: &deepseek.FIMCompletionRequest{
-				Model:     deepseek.DeepSeekChat,
-				Prompt:    "long prompt " + strings.Repeat("test ", 1000),
-				MaxTokens: 5000,
-			},
+			req: deepseek.NewDefaultFIMCompletionRequest(deepseek.DeepSeekChat, "long prompt "+strings.Repeat("test ", 1000),
+				deepseek.WithMaxTokens(5000)),
 			wantErr: true,
 		},
 	}
@@ -105,12 +93,8 @@ func TestCreateFIMCompletionWithParameters(t *testing.T) {
 	}{
 		{
 			name: "FIM completion with temperature and top_p",
-			req: &deepseek.FIMCompletionRequest{
-				Model:       deepseek.DeepSeekChat,
-				Prompt:      "func main() {\n    fmt.Println(\"hel",
-				Temperature: 0.5,
-				TopP:        0.9,
-			},
+			req: deepseek.NewDefaultFIMCompletionRequest(deepseek.DeepSeekChat, "func main() {\n    fmt.Println(\"hel",
+				deepseek.WithTemperature(0.5), deepseek.WithTopP(0.9)),
 			wantErr: false,
 			validateRes: func(t *testing.T, res *deepseek.FIMCompletionResponse) {
 				assert.NotEmpty(t, res.Choices[0].Text)
@@ -118,11 +102,9 @@ func TestCreateFIMCompletionWithParameters(t *testing.T) {
 		},
 		{
 			name: "FIM completion with invalid temperature",
-			req: &deepseek.FIMCompletionRequest{
-				Model:       deepseek.DeepSeekChat,
-				Prompt:      "func main() {\n    fmt.Println(\"hel",
-				Temperature: 2.5, // Invalid temperature
-			},
+			req: deepseek.NewDefaultFIMCompletionRequest(
+				deepseek.DeepSeekChat,
+				"func main() {\n    fmt.Println(\"hel", deepseek.WithTemperature(2.5)), // Invalid temperature
 			wantErr: true,
 		},
 	}
@@ -164,10 +146,7 @@ func TestFIMCompletionResponseStructure(t *testing.T) {
 	config := testutil.LoadTestConfig(t)
 	client := deepseek.NewClient(config.APIKey)
 
-	req := &deepseek.FIMCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
-		Prompt: "func main() {\n    fmt.Println(\"hel",
-	}
+	req := deepseek.NewDefaultFIMCompletionRequest(deepseek.DeepSeekChat, "func main() {\n    fmt.Println(\"hel")
 
 	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
 	defer cancel()

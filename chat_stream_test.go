@@ -21,15 +21,15 @@ func TestCreateChatCompletionStream(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
 	defer cancel()
 
-	stream, err := client.CreateChatCompletionStream(ctx, &deepseek.StreamChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
-		Messages: []deepseek.ChatCompletionMessage{
+	stream, err := client.CreateChatCompletionStream(ctx, deepseek.NewDefaultStreamChatCompletionRequest(
+		deepseek.DeepSeekChat,
+		[]deepseek.ChatCompletionMessage{
 			{
 				Role:    constants.ChatMessageRoleUser,
 				Content: "Tell me a joke about artificial intelligence",
 			},
 		},
-	})
+	))
 	require.NoError(t, err)
 	defer stream.Close()
 
@@ -109,11 +109,7 @@ func streamChatCompletion(
 	client *deepseek.Client,
 	messages []deepseek.ChatCompletionMessage,
 ) (string, error) {
-	req := &deepseek.StreamChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
-		Messages: messages,
-		Stream:   true,
-	}
+	req := deepseek.NewDefaultStreamChatCompletionRequest(deepseek.DeepSeekChat, messages)
 
 	stream, err := client.CreateChatCompletionStream(ctx, req)
 	require.NoError(t, err, "should create stream without error")
