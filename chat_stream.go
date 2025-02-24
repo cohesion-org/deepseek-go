@@ -85,6 +85,123 @@ type StreamChatCompletionRequest struct {
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // Optional: Number of top tokens with log probabilities, <= 20
 }
 
+type StreamChatCompletionRequestOption func(*StreamChatCompletionRequest)
+
+func NewDefaultStreamChatCompletionRequest(model string, messages []ChatCompletionMessage,
+	opts ...StreamChatCompletionRequestOption) *StreamChatCompletionRequest {
+
+	locChatCompletionReq := &StreamChatCompletionRequest{
+		Stream:           true,
+		Model:            model,
+		Messages:         messages,
+		MaxTokens:        ConstChatMaxTokensDefault,
+		Temperature:      ConstChatTemperatureDefault,
+		TopP:             ConstChatTopPDefault,
+		PresencePenalty:  ConstChatPresencePenaltyDefault,
+		FrequencyPenalty: ConstChatFrequencyPenaltyDefault,
+	}
+	for _, o := range opts {
+		o(locChatCompletionReq)
+	}
+	return locChatCompletionReq
+}
+
+func WithStreamChatUpdate(update bool) StreamChatCompletionRequestOption {
+	return func(req *StreamChatCompletionRequest) {
+		req.Stream = update
+	}
+}
+
+func WithStreamChatModel(model string, messages []ChatCompletionMessage) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.Model = model
+		r.Messages = messages
+	}
+}
+
+func WithStreamChatMaxTokens(maxTokens int) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.MaxTokens = maxTokens
+	}
+}
+
+func WithStreamChatTemperature(temperature float32) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.Temperature = temperature
+	}
+}
+
+func WithStreamChatTopP(topP float32) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.TopP = topP
+	}
+}
+
+func WithStreamChatPresencePenalty(presencePenalty float32) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.PresencePenalty = presencePenalty
+	}
+}
+
+func WithStreamChatFrequencyPenalty(frequencyPenalty float32) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.FrequencyPenalty = frequencyPenalty
+	}
+}
+
+func WithStreamChatStop(stop []string) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.Stop = stop
+	}
+}
+
+func WithStreamChatLogprobs(logprobs bool) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.LogProbs = logprobs
+	}
+}
+
+func WithCStreamhatTopLogProbs(topLogProbs int) StreamChatCompletionRequestOption {
+	return func(r *StreamChatCompletionRequest) {
+		r.TopLogProbs = topLogProbs
+	}
+}
+
+func CheckStreamChatCompletionRequest(request *StreamChatCompletionRequest) error {
+	if request == nil {
+		return fmt.Errorf("request cannot be nil")
+	}
+	if request.Model == "" {
+		return fmt.Errorf("model cannot be empty")
+	}
+	if len(request.Messages) == 0 {
+		return fmt.Errorf("messages cannot be empty")
+	}
+	if request.MaxTokens <= ConstChatMaxTokensMin {
+		return fmt.Errorf("max tokens must be > 1")
+	}
+	if request.MaxTokens > ConstChatMaxTokensMax {
+		return fmt.Errorf("max tokens must be <= 4000")
+	}
+	if request.FrequencyPenalty < ConstChatFrequencyPenaltyMin {
+		return fmt.Errorf("frequency penalty must be >= %v", ConstChatFrequencyPenaltyMin)
+	}
+	if request.FrequencyPenalty > ConstChatFrequencyPenaltyMax {
+		return fmt.Errorf("frequency penalty must be < =%v", ConstChatFrequencyPenaltyMax)
+	}
+	if request.TopLogProbs > ConstChatTopLogprobsMax {
+		return fmt.Errorf("logprobs must be <= %v", ConstChatTopLogprobsMax)
+	}
+	if request.Temperature > ConstChatTemperatureMax {
+		return fmt.Errorf("temperature must be <= %v", ConstChatTemperatureMax)
+	}
+	if request.TopP > ConstChatTopPMax {
+		return fmt.Errorf("top p must be <= %v", ConstChatTopPMax)
+	}
+
+	return nil
+}
+
 // Recv receives the next response from the stream.
 func (s *chatCompletionStream) Recv() (*StreamChatCompletionResponse, error) {
 	reader := s.reader

@@ -24,12 +24,12 @@ func TestCreateChatCompletion(t *testing.T) {
 	}{
 		{
 			name: "basic completion",
-			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeepSeekChat,
-				Messages: []deepseek.ChatCompletionMessage{
+			req: deepseek.NewDefaultChatCompletionRequest(
+				deepseek.DeepSeekChat,
+				[]deepseek.ChatCompletionMessage{
 					{Role: constants.ChatMessageRoleUser, Content: "Say hello!"},
 				},
-			},
+			),
 			wantErr: false,
 			validateRes: func(t *testing.T, res *deepseek.ChatCompletionResponse) {
 				assert.NotEmpty(t, res.Choices[0].Message.Content)
@@ -37,10 +37,10 @@ func TestCreateChatCompletion(t *testing.T) {
 		},
 		{
 			name: "empty messages",
-			req: &deepseek.ChatCompletionRequest{
-				Model:    deepseek.DeepSeekChat,
-				Messages: []deepseek.ChatCompletionMessage{},
-			},
+			req: deepseek.NewDefaultChatCompletionRequest(
+				deepseek.DeepSeekChat,
+				[]deepseek.ChatCompletionMessage{},
+			),
 			wantErr: true,
 		},
 		{
@@ -126,10 +126,7 @@ func TestMultiChatConversation(t *testing.T) {
 
 	// Second round of conversation
 	t.Run("SecondResponse", func(t *testing.T) {
-		req := &deepseek.ChatCompletionRequest{
-			Model:    deepseek.DeepSeekChat,
-			Messages: messages,
-		}
+		req := deepseek.NewDefaultChatCompletionRequest(deepseek.DeepSeekChat, messages)
 
 		resp, err := client.CreateChatCompletion(ctx, req)
 		require.NoError(t, err, "follow-up request should succeed")
