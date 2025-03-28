@@ -24,7 +24,7 @@ func Streaming() {
 	}
 	ctx := context.Background()
 
-	stream, err := client.CreateChatCompletionStream(ctx, request)
+	stream, _, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
 		log.Fatalf("ChatCompletionStream error: %v", err)
 	}
@@ -60,7 +60,7 @@ func StreamingWithReasoningContent() {
 	}
 	ctx := context.Background()
 
-	stream, err := client.CreateChatCompletionStream(ctx, request)
+	stream, _, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
 		log.Fatalf("ChatCompletionStream error: %v", err)
 	}

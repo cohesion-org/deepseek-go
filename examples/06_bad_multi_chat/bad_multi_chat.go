@@ -21,7 +21,7 @@ func BadMultiChat() {
 		Content: "What's the highest mountain in the world? One word response only.",
 	}}
 
-	response1, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
+	response1, _, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
 		Model:    deepseek.DeepSeekChat,
 		Messages: messages,
 	})
@@ -41,7 +41,7 @@ func BadMultiChat() {
 		Content: "What is the second?",
 	})
 
-	response2, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
+	response2, _, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
 		Model:    deepseek.DeepSeekChat,
 		Messages: messages,
 	})

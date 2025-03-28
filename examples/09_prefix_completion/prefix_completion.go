@@ -28,7 +28,7 @@ func ChatPrefix() {
 		},
 		Stop: []string{"```"}, // Stop the prefix when the assistant sends the closing triple backticks
 	}
-	response, err := client.CreateChatCompletion(ctx, request)
+	response, _, err := client.CreateChatCompletion(ctx, request)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -58,11 +58,11 @@ func ChatPrefixWithJsonMode() {
 
 	ctx := context.Background()
 
-	prompt := `Provide book details in JSON format. Generate 10 JSON objects. 
+	prompt := `Provide book details in JSON format. Generate 10 JSON objects.
 	Please provide the JSON in the following format: { "books": [...] }
 	Example: {"isbn": "978-0321765723", "title": "The Lord of the Rings", "author": "J.R.R. Tolkien", "genre": "Fantasy", "publication_year": 1954, "available": true}`
 
-	resp, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
+	resp, _, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
 		Model: deepseek.DeepSeekChat,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: constants.ChatMessageRoleUser, Content: prompt},

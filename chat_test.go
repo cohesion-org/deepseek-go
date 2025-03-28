@@ -55,7 +55,7 @@ func TestCreateChatCompletion(t *testing.T) {
 			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
 			defer cancel()
 
-			resp, err := client.CreateChatCompletion(ctx, tt.req)
+			resp, _, err := client.CreateChatCompletion(ctx, tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
@@ -101,7 +101,7 @@ func TestMultiChatConversation(t *testing.T) {
 			Messages: messages,
 		}
 
-		resp, err := client.CreateChatCompletion(ctx, req)
+		resp, _, err := client.CreateChatCompletion(ctx, req)
 		require.NoError(t, err, "initial request should succeed")
 		require.NotNil(t, resp, "response should not be nil")
 		require.NotEmpty(t, resp.Choices, "response should contain choices")
@@ -131,7 +131,7 @@ func TestMultiChatConversation(t *testing.T) {
 			Messages: messages,
 		}
 
-		resp, err := client.CreateChatCompletion(ctx, req)
+		resp, _, err := client.CreateChatCompletion(ctx, req)
 		require.NoError(t, err, "follow-up request should succeed")
 		require.NotNil(t, resp, "response should not be nil")
 		require.NotEmpty(t, resp.Choices, "response should contain choices")

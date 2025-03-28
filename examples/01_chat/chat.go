@@ -20,7 +20,7 @@ func Chat() {
 		},
 	}
 	ctx := context.Background()
-	response, err := client.CreateChatCompletion(ctx, request)
+	response, _, err := client.CreateChatCompletion(ctx, request)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}

@@ -62,7 +62,7 @@ func streamChatCompletion(ctx context.Context, client *deepseek.Client, messages
 		Temperature: 1.5,
 	}
 
-	stream, err := client.CreateChatCompletionStream(ctx, request)
+	stream, _, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
 		return "", err
 	}
