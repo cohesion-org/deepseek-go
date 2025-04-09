@@ -11,6 +11,7 @@ import (
 	deepseek "github.com/cohesion-org/deepseek-go"
 )
 
+// ExampleChatWithImage demonstrates how to use the OpenRouter API with an image.
 func ExampleChatWithImage() {
 	request := &deepseek.ChatCompletionRequestWithImage{
 		Model: "google/gemini-2.0-flash-001",
@@ -32,6 +33,7 @@ func ExampleChatWithImage() {
 	fmt.Println("Response:", response.Choices[0].Message.Content)
 }
 
+// ExampleStreamWithImage demonstrates how to use the OpenRouter API with a streaming image.
 func ExampleStreamWithImage() {
 	client := deepseek.NewClient(os.Getenv("OPENROUTER_API_KEY"),
 		"https://openrouter.ai/api/v1/")
@@ -68,4 +70,30 @@ func ExampleStreamWithImage() {
 			log.Println(choice.Delta.Content)
 		}
 	}
+}
+
+// ExampleChatWithImageBase64 demonstrates how to use the OpenRouter API with a base64 image.
+func ExampleChatWithImageBase64() {
+	base64content, err := deepseek.ImageToBase64("https://raw.githubusercontent.com/Vein05/nomnom/refs/heads/main/nomnom.png")
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	request := &deepseek.ChatCompletionRequestWithImage{
+		Model: "google/gemini-2.0-flash-001",
+		Messages: []deepseek.ChatCompletionMessageWithImage{
+			deepseek.NewImageMessage(
+				deepseek.ChatMessageRoleUser,
+				"How would you name this file in snake case? Only return the name and extension.",
+				base64content,
+			),
+		},
+	}
+	client := deepseek.NewClient(os.Getenv("OPENROUTER_API_KEY"),
+		"https://openrouter.ai/api/v1/")
+
+	response, err := client.CreateChatCompletionWithImage(context.Background(), request)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	fmt.Println("Response:", response.Choices[0].Message.Content)
 }
