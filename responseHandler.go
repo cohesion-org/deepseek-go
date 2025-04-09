@@ -120,6 +120,9 @@ func handleAPIError(body []byte) error {
 	if strings.HasPrefix(responseBody, "<!DOCTYPE html>") {
 		return fmt.Errorf("unexpected HTML response (model may not exist). This is likely an issue with the how some external servers return html responses for error. Make sure you are calling the right path or models")
 	}
+	if strings.Contains(responseBody, "{\"error\"") {
+		return fmt.Errorf("failed to parse response JSON: %s", responseBody)
+	}
 	return fmt.Errorf("failed to parse response JSON: unexpected end of JSON input. %s", responseBody)
 }
 
