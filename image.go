@@ -217,7 +217,7 @@ func ImageToBase64(imageURL string) (string, error) {
 	return contentType, nil
 }
 
-// handelImageFromURL downloads an image from a URL and converts it to a base64 encoded string.
+// handleImageFromURL downloads an image from a URL and converts it to a base64 encoded string.
 func handleImageFromURL(url string) (string, error) {
 	resp, err := http.Get(url)
 
