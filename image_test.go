@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/cohesion-org/deepseek-go"
@@ -201,6 +202,74 @@ func TestNewImageMessage(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := deepseek.NewImageMessage(tt.role, tt.text, tt.imageURL)
 			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestImageToBase64Encoding(t *testing.T) {
+	tests := []struct {
+		name    string
+		imgURL  string
+		want    string
+		wantErr bool
+	}{
+		{
+			name:    "JPEG image from codeskulptor",
+			imgURL:  "https://codeskulptor-demos.commondatastorage.googleapis.com/pang/HfReHl5.jpg",
+			want:    "data:image/jpeg;base64,",
+			wantErr: false,
+		},
+		{
+			name:    "PNG image from GitHub",
+			imgURL:  "https://raw.githubusercontent.com/Vein05/nomnom/refs/heads/main/nomnom.png",
+			want:    "data:image/png;base64,",
+			wantErr: false,
+		},
+		{
+			name:    "Local PNG image",
+			imgURL:  "internal/images/deepseek-go.png",
+			want:    "data:image/png;base64,",
+			wantErr: false,
+		},
+		{
+			name:    "WebP image from Google",
+			imgURL:  "https://www.gstatic.com/webp/gallery/1.webp",
+			want:    "data:image/webp;base64,",
+			wantErr: false,
+		},
+		{
+			name:    "Invalid image URL",
+			imgURL:  "https://invalid-url.com/image.jpg",
+			want:    "",
+			wantErr: true,
+		},
+		{
+			name:    "Invalid image format",
+			imgURL:  "https://www.gstatic.com/webp/gallery/1.txt",
+			want:    "",
+			wantErr: true,
+		},
+		{
+			name:    "Empty image URL",
+			imgURL:  "",
+			want:    "",
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := deepseek.ImageToBase64(tt.imgURL)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			assert.True(t, strings.HasPrefix(got, tt.want),
+				"Expected base64 string to start with %s, got %s", tt.want, got[:len(tt.want)])
+			assert.NotEmpty(t, strings.TrimPrefix(got, tt.want),
+				"Expected non-empty base64 data after prefix")
 		})
 	}
 }

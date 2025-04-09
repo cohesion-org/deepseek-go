@@ -4,7 +4,14 @@ package deepseek
 import (
 	"bufio"
 	"context"
+	"encoding/base64"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
+	"strings"
 
 	utils "github.com/cohesion-org/deepseek-go/utils"
 )
@@ -170,4 +177,88 @@ func NewImageMessage(role string, text string, imageURL string) ChatCompletionMe
 			},
 		},
 	}
+}
+
+// ImageToBase64 converts an image URL to a base64 encoded string.
+func ImageToBase64(imageURL string) (string, error) {
+	if imageURL == "" {
+		return "", fmt.Errorf("imageURL cannot be empty")
+	}
+	ext := strings.ToLower(filepath.Ext(imageURL))
+
+	validExtensions := map[string]bool{
+		".png":  true,
+		".jpg":  true,
+		".jpeg": true,
+		".webp": true,
+	}
+	if !validExtensions[ext] {
+		return "", fmt.Errorf("unsupported image format: %s", ext)
+	}
+
+	//Check if the imageURL is a valid URL or a path to a local file
+	if _, err := url.ParseRequestURI(imageURL); err == nil {
+		// If it's a valid URL, download the image and convert it to base64
+		return handleImageFromURL(imageURL)
+	}
+
+	// Read and encode the file
+	imgData, err := os.ReadFile(imageURL)
+
+	if err != nil {
+		return "", fmt.Errorf("failed to read image file: %w", err)
+	}
+
+	base64Str := base64.StdEncoding.EncodeToString(imgData)
+	contentType := createContentType(ext, base64Str)
+	if contentType == "" {
+		return "", fmt.Errorf("unsupported image format: %s", ext)
+	}
+	return contentType, nil
+}
+
+// handleImageFromURL downloads an image from a URL and converts it to a base64 encoded string.
+func handleImageFromURL(url string) (string, error) {
+	resp, err := http.Get(url)
+
+	if err != nil {
+		return "", fmt.Errorf("failed to download image: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to download image: %s", resp.Status)
+	}
+
+	contentType := resp.Header.Get("Content-Type")
+	if !strings.HasPrefix(contentType, "image/") {
+		return "", fmt.Errorf("invalid content type: %s", contentType)
+	}
+
+	imgData, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read image data: %w", err)
+	}
+
+	base64Str := base64.StdEncoding.EncodeToString(imgData)
+	ext := strings.ToLower(filepath.Ext(url))
+	contentType = createContentType(ext, base64Str)
+	if contentType == "" {
+		return "", fmt.Errorf("unsupported image format: %s", ext)
+	}
+	return contentType, nil
+}
+
+func createContentType(ext string, base64 string) string {
+	switch ext {
+	case ".png":
+		return fmt.Sprintf("data:image/png;base64,%s", base64)
+	case ".jpg", ".jpeg":
+		return fmt.Sprintf("data:image/jpeg;base64,%s", base64)
+	case ".webp":
+		return fmt.Sprintf("data:image/webp;base64,%s", base64)
+	default:
+		return ""
+	}
+
 }
