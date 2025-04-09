@@ -16,3 +16,5 @@ This directory contains various examples demonstrating different capabilities of
 | 9  | **[Prefix Completion](09_prefix_completion/prefix_completion.go)** | Example of prefix-based completion. |
 | 10 | **[Token Usage Estimation](10_token_usage/token_usage.go)** | Demonstrates how to estimate and track token usage for requests (based on Deepseek’s documentation). |
 | 11 | **[List Supported Models](11_list_models/list_models.go)** | Shows how to list all supported models through the Deepseek API. |
+| 12 | **[Function Calling](12_function_calling/function_calling.go)** | Demonstrates function calling capabilities. |
+| 13 | **[OpenRouter Images](13_openrouter_images/openrouter_images.go)** | Example usage with OpenRouter images. |
