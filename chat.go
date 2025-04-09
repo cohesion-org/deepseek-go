@@ -32,6 +32,7 @@ type ChatCompletionMessage struct {
 	ReasoningContent string     `json:"reasoning_content,omitempty"` // The reasoning content of the message (optional) when using the reasoner model with Chat Prefix Completion. When using this feature, the Prefix parameter must be set to true.
 	ToolCallID       string     `json:"tool_call_id,omitempty"`      // Tool call that this message is responding to.
 	ToolCalls        []ToolCall `json:"tool_calls,omitempty"`        // Optional tool calls.
+
 }
 
 // FunctionParameters defines the parameters for a function.
