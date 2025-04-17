@@ -44,12 +44,15 @@ Before using the library, ensure you have:
 
 ### External Providers
 - **Azure DeepSeekR1**  
-  Same as `deepseek-reasoner`, but provided by Azure. <br/>
-  Usage: `Model: deepseek.AzureDeepSeekR1`
+	Same as `deepseek-reasoner`, but provided by Azure. <br/>
+	Usage: `Model: deepseek.AzureDeepSeekR1`
 
 - **OpenRouter DeepSeek1** <br/>
-  Same as `deepseek-reasoner`, but provided by OpenRouter. <br/>
-  Usage: `Model: deepseek.OpenRouterR1`
+	Same as `deepseek-reasoner`, but provided by OpenRouter. <br/>
+  	Usage: `Model: deepseek.OpenRouterR1`
+
+- **Ollama Support** <br/>
+	Please read [Ollama Support](#ollama) for more info about this!
 
 
 <details open>
@@ -560,7 +563,14 @@ See more examples in the examples folder.
 
 To use the Deepseek API, you need an API key. You can obtain one by signing up on the [Deepseek website](https://platform.deepseek.com/api_keys)
 
+## Ollama
+
+Deepseek-go supports the usage of Ollama, but because of Ollama not following OpenAI policy, there are some extra types you need to be aware about. This is still an expereimental feature so please understand that. 
+
+You can find all information about it at [Ollama Docs](/examples/ollama.md). 
+
 ---
+
 
 ## Running Tests
 
