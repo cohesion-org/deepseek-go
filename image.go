@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -196,9 +195,8 @@ func ImageToBase64(imageURL string) (string, error) {
 		return "", fmt.Errorf("unsupported image format: %s", ext)
 	}
 
-	//Check if the imageURL is a valid URL or a path to a local file
-	if _, err := url.ParseRequestURI(imageURL); err == nil {
-		// If it's a valid URL, download the image and convert it to base64
+	// Check if the imageURL is a web URL by looking for http(s) prefix
+	if strings.HasPrefix(imageURL, "http://") || strings.HasPrefix(imageURL, "https://") {
 		return handleImageFromURL(imageURL)
 	}
 

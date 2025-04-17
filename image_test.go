@@ -232,6 +232,12 @@ func TestImageToBase64Encoding(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name:    "Local image full path",
+			imgURL:  "/Users/vein/Downloads/wallpapers/PINK-FLOYD.png",
+			want:    "data:image/png;base64,",
+			wantErr: false,
+		},
+		{
 			name:    "WebP image from Google",
 			imgURL:  "https://www.gstatic.com/webp/gallery/1.webp",
 			want:    "data:image/webp;base64,",
