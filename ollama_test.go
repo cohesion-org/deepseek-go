@@ -1,13 +1,29 @@
 package deepseek_test
 
 import (
+	"net/http"
 	"testing"
+	"time"
 
 	"github.com/cohesion-org/deepseek-go"
 	"github.com/cohesion-org/deepseek-go/constants"
 )
 
+func isOllamaRunning() bool {
+	client := http.Client{
+		Timeout: 2 * time.Second,
+	}
+	resp, err := client.Get("http://localhost:11434/api/tags")
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	return resp.StatusCode == http.StatusOK
+}
 func TestChatCompletionWithOllama(t *testing.T) {
+	if !isOllamaRunning() {
+		t.Skip("Ollama server is not running, skipping test")
+	}
 
 	req := &deepseek.ChatCompletionRequest{
 		Model: "llava:latest",
@@ -27,6 +43,10 @@ func TestChatCompletionWithOllama(t *testing.T) {
 }
 
 func TestChatCompletionWithOllamaErrors(t *testing.T) {
+	if !isOllamaRunning() {
+		t.Skip("Ollama server is not running, skipping test")
+	}
+
 	tests := []struct {
 		name    string
 		req     *deepseek.ChatCompletionRequest
