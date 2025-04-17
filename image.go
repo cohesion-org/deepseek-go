@@ -15,23 +15,26 @@ import (
 	utils "github.com/cohesion-org/deepseek-go/utils"
 )
 
+// ImageContent represents the content of an image in the chat completion request.
 type ImageContent struct {
 	URL any `json:"url,omitempty"` // URL of the image (can be a string or a base64 encoded string)
 }
 
+// ContentItem represents a single content item in the chat completion request.
 type ContentItem struct {
-	Type  string        `json:"type"`
-	Text  string        `json:"text,omitempty"`
-	Image *ImageContent `json:"image_url,omitempty"`
+	Type  string        `json:"type"`                // Type of content (e.g., "text", "image_url")
+	Text  string        `json:"text,omitempty"`      // Text content (if type is "text")
+	Image *ImageContent `json:"image_url,omitempty"` // Image content (if type is "image_url")
 }
 
+// ChatCompletionMessageWithImage represents a message in the chat completion request. It's not a deepseek feature, it's added to support images (files in the future).
 type ChatCompletionMessageWithImage struct {
-	Role             string     `json:"role"`
-	Content          any        `json:"content"` // Can accept both string and []ContentItem
-	Prefix           bool       `json:"prefix,omitempty"`
-	ReasoningContent string     `json:"reasoning_content,omitempty"`
-	ToolCallID       string     `json:"tool_call_id,omitempty"`
-	ToolCalls        []ToolCall `json:"tool_calls,omitempty"`
+	Role             string     `json:"role"`                        // Role of the message sender (e.g., "user", "assistant")
+	Content          any        `json:"content"`                     // Can accept both string and []ContentItem
+	Prefix           bool       `json:"prefix,omitempty"`            // Whether to prefix the message
+	ReasoningContent string     `json:"reasoning_content,omitempty"` // Reasoning content
+	ToolCallID       string     `json:"tool_call_id,omitempty"`      // ID of the tool call
+	ToolCalls        []ToolCall `json:"tool_calls,omitempty"`        // List of tool calls
 }
 
 // ChatCompletionRequest defines the structure for a chat completion request.
