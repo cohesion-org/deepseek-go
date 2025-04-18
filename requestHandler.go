@@ -11,8 +11,6 @@ import (
 )
 
 // HandleTimeout gets the timeout duration from the DEEPSEEK_TIMEOUT environment variable.
-//
-// (xgfone): Do we need to export the function?
 func HandleTimeout() (time.Duration, error) {
 	return handleTimeout()
 }
@@ -58,15 +56,11 @@ func getTimeoutContext(ctx context.Context, timeout time.Duration) (
 }
 
 // HandleSendChatCompletionRequest sends a request to the DeepSeek API and returns the response.
-//
-// (xgfone): Do we need to export this function?
 func HandleSendChatCompletionRequest(c Client, req *http.Request) (*http.Response, error) {
 	return c.handleRequest(req)
 }
 
 // HandleNormalRequest sends a request to the DeepSeek API and returns the response.
-//
-// (xgfone): Do we need to export this function?
 func HandleNormalRequest(c Client, req *http.Request) (*http.Response, error) {
 	return c.handleRequest(req)
 }
