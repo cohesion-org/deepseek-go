@@ -1,6 +1,11 @@
 package deepseek_test
 
 import (
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"testing"
 	"time"
@@ -30,7 +35,7 @@ func TestChatCompletionWithOllama(t *testing.T) {
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: constants.ChatMessageRoleUser, Content: "Hello how are you?"}},
 	}
-	res, err := deepseek.CreateOllamaCompletion(req)
+	res, err := deepseek.CreateOllamaChatCompletion(req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,7 +65,7 @@ func TestChatCompletionWithOllamaErrors(t *testing.T) {
 		{
 			name: "empty messages",
 			req: &deepseek.ChatCompletionRequest{
-				Model:    "llama2:latest",
+				Model:    "llava:latest",
 				Messages: []deepseek.ChatCompletionMessage{},
 			},
 			wantErr: true,
@@ -69,10 +74,54 @@ func TestChatCompletionWithOllamaErrors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := deepseek.CreateOllamaCompletion(tt.req)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("CreateOllamaCompletion() error = %v, wantErr %v", err, tt.wantErr)
+			_, err := deepseek.CreateOllamaChatCompletion(tt.req)
+			if !tt.wantErr && err != nil {
+				t.Fatalf("expected no error, got %v", err)
 			}
 		})
 	}
+}
+
+// TestChatCompletionWithOllamaStream tests the streaming chat completion with Ollama
+func TestChatCompletionWithOllamaStream(t *testing.T) {
+	if !isOllamaRunning() {
+		t.Skip("Ollama server is not running, skipping test")
+	}
+
+	ctx := context.Background()
+	req := &deepseek.StreamChatCompletionRequest{
+		Stream: true,
+		Model:  "llava:latest",
+		Messages: []deepseek.ChatCompletionMessage{
+			{Role: constants.ChatMessageRoleUser, Content: "Whoa are you?"}},
+	}
+
+	res, err := deepseek.CreateOllamaChatCompletionStream(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Close()
+	fullMessage := ""
+
+	for {
+		response, err := res.Recv()
+		if errors.Is(err, io.EOF) {
+			fmt.Println("\nStream finished")
+			break
+		}
+		if err != nil {
+			fmt.Printf("\nStream error: %v\n", err)
+			break
+		}
+		for _, choice := range response.Choices {
+			fullMessage += choice.Delta.Content // Accumulate chunk content
+			log.Println(choice.Delta.Content)
+		}
+	}
+	if fullMessage == "" {
+		t.Fatal("Expected non-empty response")
+	}
+
+	t.Logf("The reponse is: %s", fullMessage)
+
 }
