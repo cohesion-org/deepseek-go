@@ -11,7 +11,7 @@ Deepseek-Go is a Go-based API client for the [Deepseek](https://deepseek.com) pl
 ```sh
 go get github.com/cohesion-org/deepseek-go
 ```
-deepseek-go currently uses `go 1.23.3`
+deepseek-go currently uses `go 1.24.0`
 
 ## Features
 
