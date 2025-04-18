@@ -8,6 +8,8 @@ This example demonstrates how to use Ollama with deepseek-go to generate chat co
 
 ## Usage Example
 
+### Chat
+
 ```go
 package main
 
@@ -38,6 +40,59 @@ func main() {
 }
 ```
 
+### Stream
+
+```go
+package main
+
+import (
+    "context"
+    "errors"
+    "fmt"
+    "io"
+    "github.com/cohesion-org/deepseek-go"
+    "github.com/cohesion-org/deepseek-go/constants"
+)
+
+func main() {
+    ctx := context.Background()
+    messages := []deepseek.ChatCompletionMessage{
+        {
+            Role:    constants.ChatMessageRoleUser,
+            Content: "What is artificial intelligence?",
+        },
+    }
+
+    req := &deepseek.ChatCompletionRequest{
+        Stream: true,
+        Model:  "llava:latest",
+        Messages: messages,
+    }
+
+    stream, err := deepseek.CreateOllamaChatCompletionStream(ctx, req)
+    if err != nil {
+        fmt.Printf("Error creating stream: %v\n", err)
+        return
+    }
+    defer stream.Close()
+
+    for {
+        response, err := stream.Recv()
+        if errors.Is(err, io.EOF) {
+            break
+        }
+        if err != nil {
+            fmt.Printf("Stream error: %v\n", err)
+            return
+        }
+
+        for _, choice := range response.Choices {
+            fmt.Print(choice.Delta.Content)
+        }
+    }
+}
+```
+
 ## Features
 
 ✅ **Supported**
@@ -47,14 +102,12 @@ func main() {
 - Model selection
 
 ❌ **Current Limitations**
-- No streaming support
 - No image handling
-- Limited function calling
-- Response format differences
+- No function and tool calling
 
 ## Roadmap
 
-- [ ] Streaming support
+- [✅] Streaming support
 - [ ] Image handling
 - [ ] Enhanced function calling
 - [ ] Improved error handling
