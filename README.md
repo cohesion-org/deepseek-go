@@ -558,7 +558,54 @@ func ChatPrefix() {
 }
 
 ```
-See more examples in the examples folder.
+</details>
+
+<details>
+<summary> Using external providers with image support (OpenRouter) </summary>
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    "os"
+
+    deepseek "github.com/cohesion-org/deepseek-go"
+)
+
+func main() {
+    // Create request with image URL
+    request := &deepseek.ChatCompletionRequestWithImage{
+        Model: "google/gemini-2.0-flash-001",
+        Messages: []deepseek.ChatCompletionMessageWithImage{
+            deepseek.NewImageMessage(
+                deepseek.ChatMessageRoleUser,
+                "Describe this image",
+                "https://example.com/path/to/image.jpg",
+            ),
+        },
+    }
+
+    // Initialize client with OpenRouter
+    client := deepseek.NewClient(
+        os.Getenv("OPENROUTER_API_KEY"),
+        "https://openrouter.ai/api/v1/",
+    )
+
+    // Send request and get response
+    response, err := client.CreateChatCompletionWithImage(context.Background(), request)
+    if err != nil {
+        log.Fatalf("error: %v", err)
+    }
+
+    fmt.Println("Response:", response.Choices[0].Message.Content)
+}
+```
+
+For more advanced examples including streaming and base64 image support, see [OpenRouter Images Examples](/examples/13_openrouter_images/openrouter_images.go).
+
 </details>
 
 ---
