@@ -8,6 +8,11 @@ This example demonstrates how to use Ollama with deepseek-go to generate chat co
 
 ## Usage Example
 
+- [Chat](#chat)
+- [Streaming](#stream)
+- [Image](#image)
+- [Stream with Image](#stream-with-image)
+
 ### Chat
 
 ```go
@@ -30,7 +35,7 @@ func main() {
         },
     }
     
-    resp, err := deepseek.CreateOllamaCompletion(req)
+    resp, err := deepseek.CreateOllamaChatCompletion(req)
     if err != nil {
         fmt.Printf("Error: %v\n", err)
         return
@@ -56,17 +61,14 @@ import (
 
 func main() {
     ctx := context.Background()
-    messages := []deepseek.ChatCompletionMessage{
-        {
-            Role:    constants.ChatMessageRoleUser,
-            Content: "What is artificial intelligence?",
+    req := &deepseek.StreamChatCompletionRequest{
+        Model: "llava:latest",
+        Messages: []deepseek.ChatCompletionMessage{
+            {
+                Role:    constants.ChatMessageRoleUser,
+                Content: "What is artificial intelligence?",
+            },
         },
-    }
-
-    req := &deepseek.ChatCompletionRequest{
-        Stream: true,
-        Model:  "llava:latest",
-        Messages: messages,
     }
 
     stream, err := deepseek.CreateOllamaChatCompletionStream(ctx, req)
@@ -76,6 +78,100 @@ func main() {
     }
     defer stream.Close()
 
+    for {
+        response, err := stream.Recv()
+        if errors.Is(err, io.EOF) {
+            break
+        }
+        if err != nil {
+            fmt.Printf("Stream error: %v\n", err)
+            return
+        }
+
+        for _, choice := range response.Choices {
+            fmt.Print(choice.Delta.Content)
+        }
+    }
+}
+```
+
+### Image 
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/cohesion-org/deepseek-go"
+)
+
+func main() {
+    // Convert image to base64
+    imgData, err := deepseek.ImageToBase64("path/to/your/image.png")
+    if err != nil {
+        fmt.Printf("Error converting image: %v\n", err)
+        return
+    }
+
+    // Create request with image
+    req := &deepseek.ChatCompletionRequestWithImage{
+        Model: "llava:latest",
+        Messages: []deepseek.ChatCompletionMessageWithImage{
+            deepseek.NewImageMessage("user", "What is this image about?", imgData),
+        },
+    }
+
+    // Send request and get response
+    resp, err := deepseek.CreateOllamaChatCompletionWithImage(req)
+    if err != nil {
+        fmt.Printf("Error: %v\n", err)
+        return
+    }
+
+    fmt.Printf("Response: %s\n", resp.Choices[0].Message.Content)
+}
+```
+
+### Stream with Image
+
+```go
+package main
+
+import (
+    "context"
+    "errors"
+    "fmt"
+    "io"
+    "github.com/cohesion-org/deepseek-go"
+)
+
+func main() {
+    // Convert image to base64
+    imgData, err := deepseek.ImageToBase64("path/to/your/image.png")
+    if err != nil {
+        fmt.Printf("Error converting image: %v\n", err)
+        return
+    }
+
+    // Create request with image
+    req := &deepseek.StreamChatCompletionRequestWithImage{
+        Model: "llava:latest",
+        Messages: []deepseek.ChatCompletionMessageWithImage{
+            deepseek.NewImageMessage("user", "What is this image about?", imgData),
+        },
+    }
+    req.Stream = true
+
+    // Create stream
+    ctx := context.Background()
+    stream, err := deepseek.CreateOllamaChatCompletionStreamWithImage(ctx, req)
+    if err != nil {
+        fmt.Printf("Error creating stream: %v\n", err)
+        return
+    }
+    defer stream.Close()
+
+    // Read from stream
     for {
         response, err := stream.Recv()
         if errors.Is(err, io.EOF) {
@@ -108,7 +204,7 @@ func main() {
 ## Roadmap
 
 - [✅] Streaming support
-- [ ] Image handling
+- [✅] Image handling
 - [ ] Enhanced function calling
 - [ ] Improved error handling
 - [ ] Additional configuration options
