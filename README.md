@@ -61,6 +61,8 @@ Before using the library, ensure you have:
 
 ### Example for chatting with deepseek
 
+Even more examples are avilable [here](/examples/README.md)
+
 ```go
 package main
 
