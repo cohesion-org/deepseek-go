@@ -17,6 +17,7 @@ deepseek-go currently uses `go 1.24.0`
 
 - **Chat Completion**: Easily send chat messages and receive responses from Deepseek's AI models. It also supports streaming.
 - **Modular Design**: The library is structured into reusable components for building, sending, and handling requests and responses.
+- **External Providers**: Deepseek-go also supports external providers like OpenRouter, Azure, and even Ollama. 
 - **MIT License**: Open-source and free for both personal and commercial use.
 
 The recent gain in popularity and cybersecurity issues Deepseek has seen makes for many problems while using the API. Please refer to the [status](https://status.deepseek.com/) page for the current status.
