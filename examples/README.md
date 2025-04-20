@@ -18,3 +18,6 @@ This directory contains various examples demonstrating different capabilities of
 | 11 | **[List Supported Models](11_list_models/list_models.go)** | Shows how to list all supported models through the Deepseek API. |
 | 12 | **[Function Calling](12_function_calling/function_calling.go)** | Demonstrates function calling capabilities. |
 | 13 | **[OpenRouter Images](13_openrouter_images/openrouter_images.go)** | Example usage with OpenRouter images. |
+
+# Ollama
+Ollama docs are located [here](./ollama.md).
