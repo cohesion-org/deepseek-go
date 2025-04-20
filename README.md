@@ -536,7 +536,7 @@ import (
 
 func ChatPrefix() {
 	client := deepseek.NewClient(
-		"sk-5b448a2a7fa24b168e4d87884c1df59e",
+		DEEPSEEK_API_KEY,
 		"https://api.deepseek.com/beta/") // Use the beta endpoint
 
 	ctx := context.Background()
