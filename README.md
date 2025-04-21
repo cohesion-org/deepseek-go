@@ -615,7 +615,7 @@ To use the Deepseek API, you need an API key. You can obtain one by signing up o
 
 ## Ollama
 
-Deepseek-go supports the usage of Ollama, but because of Ollama not following OpenAI policy, there are some extra types you need to be aware about. This is still an expereimental feature so please understand that. 
+Deepseek-go supports the usage of Ollama, but because of Ollama not following OpenAI policy, there are some extra types you need to be aware about. This is still an experimental feature so please understand that. 
 
 You can find all information about it at [Ollama Docs](/examples/ollama.md). 
 
