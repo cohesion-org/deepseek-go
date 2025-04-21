@@ -49,6 +49,27 @@ type Message struct {
 	ToolCalls        []ToolCall `json:"tool_calls,omitempty"`        // Optional tool calls.
 }
 
+// Custom unmarshal to support both "reasoning_content" and "reasoning" fields.
+// This is necessary because the API may return either field, and we want to prefer "reasoning_content" if present.
+// OpenRouter API returns "reasoning" field in some cases.
+func (m *Message) UnmarshalJSON(data []byte) error {
+	type Alias Message
+	aux := &struct {
+		Reasoning *string `json:"reasoning,omitempty"`
+		*Alias
+	}{
+		Alias: (*Alias)(m),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	// Prefer reasoning_content, but fallback to reasoning if present
+	if m.ReasoningContent == "" && aux.Reasoning != nil {
+		m.ReasoningContent = *aux.Reasoning
+	}
+	return nil
+}
+
 // Logprobs represents log probability information for a choice or token.
 type Logprobs struct {
 	Content []ContentToken `json:"content"` // A list of message content tokens with log probability information.
