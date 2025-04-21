@@ -86,43 +86,66 @@ func TestNewClientWithOptions(t *testing.T) {
 		})
 	}
 }
-
 func TestNewClientWithOptions_EmptyAuthToken(t *testing.T) {
-	// Test with empty auth token and no environment variable
-	t.Setenv("DEEPSEEK_API_KEY", "") // Clear the env var for testing
+	tests := []struct {
+		name          string
+		envVar        string
+		inputToken    string
+		wantErr       bool
+		wantClientNil bool
+		wantAuthToken string
+	}{
+		{
+			name:          "empty token and empty env var",
+			envVar:        "",
+			inputToken:    "",
+			wantErr:       true,
+			wantClientNil: true,
+		},
+		{
+			name:          "empty token, env var set",
+			envVar:        "env-api-key",
+			inputToken:    "",
+			wantErr:       false,
+			wantClientNil: false,
+			wantAuthToken: "env-api-key",
+		},
+		{
+			name:          "direct token takes precedence",
+			envVar:        "env-api-key",
+			inputToken:    "direct-api-key",
+			wantErr:       false,
+			wantClientNil: false,
+			wantAuthToken: "direct-api-key",
+		},
+	}
 
-	// Should return error when both auth token and env var are empty
-	client, err := deepseek.NewClientWithOptions("")
-	if err == nil {
-		t.Error("Expected error when both auth token and environment variable are empty, got nil")
-	}
-	if client != nil {
-		t.Error("Expected nil client when auth token validation fails")
-	}
-
-	// Test with empty auth token but environment variable set
-	t.Setenv("DEEPSEEK_API_KEY", "env-api-key")
-	client, err = deepseek.NewClientWithOptions("")
-	if err != nil {
-		t.Errorf("Expected no error when environment variable is set, got: %v", err)
-	}
-	if client == nil {
-		t.Error("Expected non-nil client when environment variable is used")
-	}
-	if client != nil && client.AuthToken != "env-api-key" {
-		t.Errorf("Expected auth token to be 'env-api-key', got '%s'", client.AuthToken)
-	}
-
-	// Test with non-empty auth token (should take precedence over env var)
-	client, err = deepseek.NewClientWithOptions("direct-api-key")
-	if err != nil {
-		t.Errorf("Expected no error when auth token is provided directly, got: %v", err)
-	}
-	if client == nil {
-		t.Error("Expected non-nil client when auth token is provided directly")
-	}
-	if client != nil && client.AuthToken != "direct-api-key" {
-		t.Errorf("Expected auth token to be 'direct-api-key', got '%s'", client.AuthToken)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Setenv("DEEPSEEK_API_KEY", tt.envVar)
+			client, err := deepseek.NewClientWithOptions(tt.inputToken)
+			if tt.wantErr {
+				if err == nil {
+					t.Error("expected error, got nil")
+				}
+				if client != nil {
+					t.Error("expected nil client when auth token validation fails")
+				}
+				return
+			}
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+			if tt.wantClientNil && client != nil {
+				t.Error("expected nil client, got non-nil")
+			}
+			if !tt.wantClientNil && client == nil {
+				t.Error("expected non-nil client, got nil")
+			}
+			if client != nil && client.AuthToken != tt.wantAuthToken {
+				t.Errorf("expected auth token to be '%s', got '%s'", tt.wantAuthToken, client.AuthToken)
+			}
+		})
 	}
 }
 
