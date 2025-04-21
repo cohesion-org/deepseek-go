@@ -40,10 +40,7 @@ func (rb *AuthedRequest) SetBaseURL(BaseURL string) *AuthedRequest {
 // SetPath sets the path for the request.
 // If the path is empty, it defaults to "chat/completions".
 func (rb *AuthedRequest) SetPath(path string) *AuthedRequest {
-	if path == "" {
-		fmt.Println("path cannot be empty. Please set a path. Defaulting to 'chat/completions'")
-	}
-	rb.Path = "chat/completions" // Notes: Default path is set to "chat/completions" if not provided.
+	rb.Path = path
 	return rb
 }
 
