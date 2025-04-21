@@ -55,7 +55,10 @@ func NewClient(AuthToken string, baseURL ...string) *Client {
 // Option configures a Client instance
 type Option func(*Client) error
 
-// NewClientWithOptions creates a new DeepSeek API client with the specified options
+// NewClientWithOptions creates a new client with required authentication token and optional configurations.
+// Defaults:
+// - BaseURL: "https://api.deepseek.com/"
+// - Timeout: 5 minutes
 func NewClientWithOptions(authToken string, opts ...Option) (*Client, error) {
 	// Check for empty auth token and try to use environment variable
 	if authToken == "" {
