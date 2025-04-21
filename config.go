@@ -31,7 +31,12 @@ type Client struct {
 // You can't set path with this method. If you want to set path, use NewClientWithOptions.
 func NewClient(AuthToken string, baseURL ...string) *Client {
 	if AuthToken == "" {
-		return nil
+		if envKey, ok := os.LookupEnv("DEEPSEEK_API_KEY"); ok && envKey != "" {
+			AuthToken = envKey
+		} else {
+			fmt.Printf("authToken is empty. Please provide a valid token or set the DEEPSEEK_API_KEY environment variable")
+			return nil
+		}
 	}
 	// check if this is a valid URL
 	if len(baseURL) > 0 {

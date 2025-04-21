@@ -1,6 +1,7 @@
 package deepseek_test
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -11,6 +12,23 @@ import (
 
 func TestNewCleint(t *testing.T) {
 	testutil.SkipIfShort(t)
+	// test empty api key with no env fallback
+	t.Run("empty api key with no env fallback", func(t *testing.T) {
+		os.Unsetenv("DEEPSEEK_API_KEY")
+		client := deepseek.NewClient("")
+		require.Nil(t, client)
+	})
+
+	// test empty api key with env fallback
+	t.Run("empty api key with env fallback", func(t *testing.T) {
+		os.Setenv("DEEPSEEK_API_KEY", "test")
+		defer os.Unsetenv("DEEPSEEK_API_KEY")
+
+		client := deepseek.NewClient("")
+		require.NotNil(t, client)
+		require.Equal(t, "test", client.AuthToken)
+	})
+
 	//test empty api key
 	client := deepseek.NewClient("")
 	require.Nil(t, client)
