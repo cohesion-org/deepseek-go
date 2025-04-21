@@ -25,8 +25,14 @@ func LoadTestConfig(t *testing.T) *TestConfig {
 		_ = err
 	}
 
+	var apiKey string
+	if os.Getenv("TEST_DEEPSEEK_API_KEY") == "" {
+		apiKey = os.Getenv("DEEPSEEK_API_KEY")
+	} else {
+		apiKey = os.Getenv("TEST_DEEPSEEK_API_KEY")
+	}
 	config := &TestConfig{
-		APIKey:      os.Getenv("TEST_DEEPSEEK_API_KEY"),
+		APIKey:      apiKey,
 		TestTimeout: 30 * time.Second,
 	}
 
