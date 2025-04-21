@@ -15,6 +15,7 @@ func HandleTimeout() (time.Duration, error) {
 	return handleTimeout()
 }
 
+// handleTimeout checks the DEEPSEEK_TIMEOUT environment variable and returns the timeout duration.
 func handleTimeout() (time.Duration, error) {
 	if err := godotenv.Load(); err != nil {
 		_ = err
@@ -31,6 +32,10 @@ func handleTimeout() (time.Duration, error) {
 	return duration, nil
 }
 
+// getTimeoutContext creates a context with a timeout.
+// If the timeout is less than or equal to 0, it tries to get the timeout from the environment variable.
+// If the timeout is greater than 0, it creates a context with that timeout.
+// It returns the context, a cancel function, and an error if any.
 func getTimeoutContext(ctx context.Context, timeout time.Duration) (
 	context.Context,
 	context.CancelFunc,
@@ -65,6 +70,8 @@ func HandleNormalRequest(c Client, req *http.Request) (*http.Response, error) {
 	return c.handleRequest(req)
 }
 
+// handleRequest sends the HTTP request using the provided HTTP client.
+// If no client is provided, it uses the default HTTP client.
 func (c *Client) handleRequest(req *http.Request) (*http.Response, error) {
 	client := c.HTTPClient
 	if client == nil {

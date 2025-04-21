@@ -6,7 +6,7 @@ import (
 
 // TokenEstimate represents an estimated token count
 type TokenEstimate struct {
-	EstimatedTokens int `json:"estimated_tokens"` //the total estimated prompt tokens. These are different form total tokens used.
+	EstimatedTokens int `json:"estimated_tokens"` // The total estimated prompt tokens. These are different form total tokens used.
 }
 
 // EstimateTokenCount estimates the number of tokens in a text based on character type ratios

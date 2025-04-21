@@ -128,7 +128,7 @@ func (c *Client) CreateChatCompletionStreamWithImage(
 
 	ctx, _, err := getTimeoutContext(ctx, c.Timeout)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting timeout context: %w", err)
 	}
 
 	request.Stream = true
@@ -144,7 +144,7 @@ func (c *Client) CreateChatCompletionStreamWithImage(
 
 	resp, err := HandleSendChatCompletionRequest(*c, req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending request: %w", err)
 	}
 
 	if resp.StatusCode >= 400 {
