@@ -126,6 +126,7 @@ func handleAPIError(body []byte) error {
 	return fmt.Errorf("failed to parse response JSON: unexpected end of JSON input. %s", responseBody)
 }
 
+// validateChatCompletionResponse validates the parsed chat completion response.
 func validateChatCompletionResponse(parsedResponse *ChatCompletionResponse) error {
 	if parsedResponse == nil {
 		return fmt.Errorf("nil response")
