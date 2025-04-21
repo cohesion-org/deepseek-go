@@ -25,11 +25,16 @@ func LoadTestConfig(t *testing.T) *TestConfig {
 		_ = err
 	}
 
+	defer func() {
+		os.Unsetenv("TEST_DEEPSEEK_API_KEY")
+		os.Unsetenv("TEST_TIMEOUT")
+	}()
+
 	var apiKey string
-	if os.Getenv("TEST_DEEPSEEK_API_KEY") == "" {
+	apiKey = os.Getenv("TEST_DEEPSEEK_API_KEY")
+	if apiKey == "" {
 		apiKey = os.Getenv("DEEPSEEK_API_KEY")
-	} else {
-		apiKey = os.Getenv("TEST_DEEPSEEK_API_KEY")
+		t.Log("TEST_DEEPSEEK_API_KEY not ofund, trying DEEPSEEK_API_KEY from environment")
 	}
 	config := &TestConfig{
 		APIKey:      apiKey,
@@ -42,10 +47,9 @@ func LoadTestConfig(t *testing.T) *TestConfig {
 			config.TestTimeout = d
 		}
 	}
-
 	// Skip tests if API key is not set
 	if config.APIKey == "" {
-		t.Skip("Skipping test: TEST_DEEPSEEK_API_KEY not set")
+		t.Skip("Skipping test: neither TEST_DEEPSEEK_API_KEY nor DEEPSEEK_API_KEY is set")
 	}
 
 	return config
