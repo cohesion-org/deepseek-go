@@ -19,7 +19,7 @@ func (c *Client) CreateChatCompletion(
 
 	ctx, tcancel, err := getTimeoutContext(ctx, c.Timeout)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting timeout context: %w", err)
 	}
 	defer tcancel()
 
@@ -49,7 +49,7 @@ func (c *Client) CreateChatCompletion(
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}
 
-	return updatedResp, err
+	return updatedResp, nil
 }
 
 // CreateChatCompletionStream sends a chat completion request with stream = true and returns the delta
@@ -63,7 +63,7 @@ func (c *Client) CreateChatCompletionStream(
 
 	ctx, _, err := getTimeoutContext(ctx, c.Timeout)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting timeout context: %w", err)
 	}
 
 	request.Stream = true
@@ -79,7 +79,7 @@ func (c *Client) CreateChatCompletionStream(
 
 	resp, err := HandleSendChatCompletionRequest(*c, req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending request: %w", err)
 	}
 
 	if resp.StatusCode >= 400 {
@@ -130,7 +130,7 @@ func (c *Client) CreateFIMCompletion(
 	if err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}
-	return updatedResp, err
+	return updatedResp, nil
 }
 
 // CreateFIMStreamCompletion sends a FIM completion request with stream = true and returns the delta
@@ -153,7 +153,7 @@ func (c *Client) CreateFIMStreamCompletion(
 
 	resp, err := HandleSendChatCompletionRequest(*c, req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending request: %w", err)
 	}
 
 	if resp.StatusCode >= 400 {
