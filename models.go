@@ -64,7 +64,7 @@ func ListAllModels(c *Client, ctx context.Context) (*APIModels, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
 	var models APIModels
