@@ -57,12 +57,32 @@ type StreamDelta struct {
 	ToolCalls        []ToolCall `json:"tool_calls,omitempty"`        // Optional tool calls related to the message.
 }
 
+// Custom unmarshal to support both "reasoning_content" and "reasoning" fields.
+// This is necessary because the API may return either field, and we want to prefer "reasoning_content" if present.
+func (s *StreamDelta) UnmarshalJSON(data []byte) error {
+	type Alias StreamDelta
+	aux := &struct {
+		Reasoning *string `json:"reasoning,omitempty"`
+		*Alias
+	}{
+		Alias: (*Alias)(s),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return fmt.Errorf("unmarshal error: %w", err)
+	}
+	// Prefer reasoning_content, but fallback to reasoning if present
+	if s.ReasoningContent == "" && aux.Reasoning != nil {
+		s.ReasoningContent = *aux.Reasoning
+	}
+	return nil
+}
+
 // StreamChoices represents a choice in the chat completion stream.
 type StreamChoices struct {
 	Index        int         `json:"index"` // Index of the choice.
 	Delta        StreamDelta // Delta information for the choice.
 	FinishReason string      `json:"finish_reason,omitempty"` // Reason for finishing the generation.
-	Logprobs     Logprobs    `json:"logprobs,omitempty"`      // Log probabilities for the generated tokens.
+	Logprobs     any         `json:"logprobs,omitempty"`      // Log probabilities for the generated tokens.
 }
 
 // StreamChatCompletionResponse represents a single response from a streaming chat completion API call.
