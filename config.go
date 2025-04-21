@@ -68,6 +68,9 @@ func NewClientWithOptions(authToken string, opts ...Option) (*Client, error) {
 			return nil, fmt.Errorf("authToken is empty and DEEPSEEK_API_KEY environment variable is not set")
 		}
 	}
+	if authToken == "" {
+		return nil, fmt.Errorf("authToken is empty. Please provide a valid token or set the DEEPSEEK_API_KEY environment variable.")
+	}
 
 	client := &Client{
 		AuthToken: authToken,
