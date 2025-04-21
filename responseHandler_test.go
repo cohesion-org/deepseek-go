@@ -69,6 +69,102 @@ func TestHandleChatCompletionResponse(t *testing.T) {
 			want: &validResponse,
 		},
 		{
+			name: "reasoning_content present",
+			response: &http.Response{
+				StatusCode: http.StatusOK,
+				Body: io.NopCloser(bytes.NewReader([]byte(`{
+                    "id": "chat-456",
+                    "object": "chat.completion",
+                    "created": 1677858243,
+                    "model": "deepseek-chat",
+                    "choices": [{
+                        "index": 0,
+                        "message": {
+                            "role": "assistant",
+                            "content": "Here is the answer.",
+                            "reasoning_content": "This is my reasoning."
+                        },
+                        "finish_reason": "stop"
+                    }],
+                    "usage": {
+                        "prompt_tokens": 5,
+                        "completion_tokens": 10,
+                        "total_tokens": 15
+                    }
+                }`))),
+			},
+			want: &deepseek.ChatCompletionResponse{
+				ID:      "chat-456",
+				Object:  "chat.completion",
+				Created: 1677858243,
+				Model:   "deepseek-chat",
+				Choices: []deepseek.Choice{
+					{
+						Index: 0,
+						Message: deepseek.Message{
+							Role:             "assistant",
+							Content:          "Here is the answer.",
+							ReasoningContent: "This is my reasoning.",
+						},
+						FinishReason: "stop",
+					},
+				},
+				Usage: deepseek.Usage{
+					PromptTokens:     5,
+					CompletionTokens: 10,
+					TotalTokens:      15,
+				},
+			},
+		},
+		{
+			name: "reasoning present (OpenRouter style)",
+			response: &http.Response{
+				StatusCode: http.StatusOK,
+				Body: io.NopCloser(bytes.NewReader([]byte(`{
+                    "id": "chat-789",
+                    "object": "chat.completion",
+                    "created": 1677858244,
+                    "model": "deepseek-chat",
+                    "choices": [{
+                        "index": 0,
+                        "message": {
+                            "role": "assistant",
+                            "content": "Here is another answer.",
+                            "reasoning": "This is my OpenRouter reasoning."
+                        },
+                        "finish_reason": "stop"
+                    }],
+                    "usage": {
+                        "prompt_tokens": 6,
+                        "completion_tokens": 12,
+                        "total_tokens": 18
+                    }
+                }`))),
+			},
+			want: &deepseek.ChatCompletionResponse{
+				ID:      "chat-789",
+				Object:  "chat.completion",
+				Created: 1677858244,
+				Model:   "deepseek-chat",
+				Choices: []deepseek.Choice{
+					{
+						Index: 0,
+						Message: deepseek.Message{
+							Role:             "assistant",
+							Content:          "Here is another answer.",
+							ReasoningContent: "This is my OpenRouter reasoning.",
+						},
+						FinishReason: "stop",
+					},
+				},
+				Usage: deepseek.Usage{
+					PromptTokens:     6,
+					CompletionTokens: 12,
+					TotalTokens:      18,
+				},
+			},
+		},
+		{
 			name: "invalid JSON",
 			response: &http.Response{
 				StatusCode: http.StatusOK,
