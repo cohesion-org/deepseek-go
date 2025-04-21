@@ -15,6 +15,9 @@ import (
 	api "github.com/ollama/ollama/api"
 )
 
+// IsOllamaRunning checks if the Ollama server is running by sending a GET request to the API
+// endpoint. It returns true if the server is running and responds with a 200 OK status.
+// http://localhost:11434/api/tags is the endpoint to check if the server is running.
 func IsOllamaRunning() bool {
 	client := http.Client{
 		Timeout: 2 * time.Second,
@@ -27,27 +30,27 @@ func IsOllamaRunning() bool {
 	return resp.StatusCode == http.StatusOK
 }
 
-// OllamaStreamResponse represents the response format from Ollama
+// OllamaStreamResponse represents the response format from Ollama when streaming chat completions.
 type OllamaStreamResponse struct {
-	Model              string      `json:"model"`
-	CreatedAt          string      `json:"created_at"`
-	Message            api.Message `json:"message"`
-	Done               bool        `json:"done"`
-	DoneReason         string      `json:"done_reason,omitempty"`
-	TotalDuration      int64       `json:"total_duration,omitempty"`
-	LoadDuration       int64       `json:"load_duration,omitempty"`
-	PromptEvalCount    int64       `json:"prompt_eval_count,omitempty"`
-	PromptEvalDuration int64       `json:"prompt_eval_duration,omitempty"`
-	EvalCount          int64       `json:"eval_count,omitempty"`
-	EvalDuration       int64       `json:"eval_duration,omitempty"`
+	Model              string      `json:"model"`                          // Name of the model used for the response
+	CreatedAt          string      `json:"created_at"`                     // Timestamp when the response was created
+	Message            api.Message `json:"message"`                        // Message content and role from Ollama's API
+	Done               bool        `json:"done"`                           // Indicates if the stream is finished
+	DoneReason         string      `json:"done_reason,omitempty"`          // Optional reason for completion (e.g., "stop", "length")
+	TotalDuration      int64       `json:"total_duration,omitempty"`       // Total time taken for the request (nanoseconds)
+	LoadDuration       int64       `json:"load_duration,omitempty"`        // Time spent loading the model (nanoseconds)
+	PromptEvalCount    int64       `json:"prompt_eval_count,omitempty"`    // Number of tokens evaluated in the prompt
+	PromptEvalDuration int64       `json:"prompt_eval_duration,omitempty"` // Time spent evaluating the prompt (nanoseconds)
+	EvalCount          int64       `json:"eval_count,omitempty"`           // Number of tokens generated in the response
+	EvalDuration       int64       `json:"eval_duration,omitempty"`        // Time spent generating the response (nanoseconds)
 }
 
-// ollamaCompletionStream implements the ChatCompletionStream interface for Ollama
+// ollamaCompletionStream implements the ChatCompletionStream interface for Ollama.
 type ollamaCompletionStream struct {
-	ctx    context.Context
-	cancel context.CancelFunc
-	resp   *http.Response
-	reader *bufio.Reader
+	ctx    context.Context    // Context for stream cancellation
+	cancel context.CancelFunc // Function to cancel the context
+	resp   *http.Response     // HTTP response from the Ollama API
+	reader *bufio.Reader      // Buffered reader for streaming response
 }
 
 // convertToOllamaMessages converts deepseek messages to ollama format
@@ -84,7 +87,7 @@ func convertToOllamaMessagesWithImage(messages []ChatCompletionMessageWithImage)
 						}
 						base64Data, err := base64.StdEncoding.DecodeString(parts[1])
 						if err != nil {
-							return err, nil
+							return fmt.Errorf("error decoding to base64 %w", err), nil
 						}
 						imageData = append(imageData, base64Data)
 					}
@@ -159,7 +162,7 @@ func CreateOllamaChatCompletion(req *ChatCompletionRequest) (ChatCompletionRespo
 	}, response)
 
 	if err != nil {
-		return ChatCompletionResponse{}, err
+		return ChatCompletionResponse{}, fmt.Errorf("error sending request: %w", err)
 	}
 
 	convertedResponse := convertToDeepseekResponse(lastResponse)
@@ -201,7 +204,7 @@ func CreateOllamaChatCompletionStream(
 
 	resp, err := HandleSendChatCompletionRequest(c, req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending request: %w", err)
 	}
 
 	if resp.StatusCode >= 400 {
@@ -307,7 +310,7 @@ func CreateOllamaChatCompletionWithImage(req *ChatCompletionRequestWithImage) (C
 	}, response)
 
 	if err != nil {
-		return ChatCompletionResponse{}, err
+		return ChatCompletionResponse{}, fmt.Errorf("error sending request: %w", err)
 	}
 
 	convertedResponse := convertToDeepseekResponse(lastResponse)
