@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -59,6 +60,15 @@ type Option func(*Client) error
 // - BaseURL: "https://api.deepseek.com/"
 // - Timeout: 5 minutes
 func NewClientWithOptions(authToken string, opts ...Option) (*Client, error) {
+	// Check for empty auth token and try to use environment variable
+	if authToken == "" {
+		if envKey, ok := os.LookupEnv("DEEPSEEK_API_KEY"); ok {
+			authToken = envKey
+		} else {
+			return nil, fmt.Errorf("authToken is empty and DEEPSEEK_API_KEY environment variable is not set")
+		}
+	}
+
 	client := &Client{
 		AuthToken: authToken,
 		BaseURL:   "https://api.deepseek.com/",
