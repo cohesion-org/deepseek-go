@@ -78,7 +78,7 @@ import (
 
 func main() {
 	// Set up the Deepseek client
-    client := deepseek.NewClient("") // Empty API key triggers env lookup for "DEEPSEEK_API_KEY"
+	client := deepseek.NewClient("") // Empty API key triggers env lookup for "DEEPSEEK_API_KEY"
 
 	// Create a chat completion request
 	request := &deepseek.ChatCompletionRequest{
