@@ -1,4 +1,6 @@
-// This is a not a deepseek feature, it's added to to support images(files in the future) for the chat completion
+// Package deepseek provides image handling capabilities for chat completions.
+// This file implements functionality to support images in chat requests, which is not a native Deepseek feature
+// but allows for compatibility with providers that support image inputs.
 package deepseek
 
 import (
