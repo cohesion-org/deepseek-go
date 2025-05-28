@@ -93,6 +93,7 @@ type StreamChatCompletionResponse struct {
 	Model   string          `json:"model"`           // Model used.
 	Choices []StreamChoices `json:"choices"`         // Choices generated.
 	Usage   *StreamUsage    `json:"usage,omitempty"` // Usage statistics (optional).
+	Title   string          `json:"title,omitempty"` // Title of the response (optional).
 }
 
 // StreamChatCompletionRequest represents the request body for a streaming chat completion API call.

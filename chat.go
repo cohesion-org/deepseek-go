@@ -1,6 +1,3 @@
-// Package deepseek provides chat completion functionality.
-// This file defines the core data structures for chat completions, including message roles,
-// request parameters, and tool/function calling capabilities.
 package deepseek
 
 import (

@@ -1,6 +1,3 @@
-// Package deepseek provides configuration options for the Deepseek API client.
-// This file defines the Client struct and provides methods for creating and configuring clients
-// with various options like custom base URLs, timeouts, and HTTP clients.
 package deepseek
 
 import (

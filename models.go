@@ -1,6 +1,3 @@
-// Package deepseek provides access to Deepseek AI models and compatible providers.
-// This file defines constants for official Deepseek models and external models,
-// as well as functionality to list all available models from the API.
 package deepseek
 
 import (

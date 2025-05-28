@@ -1,4 +1,3 @@
-// package constants contains the constants used in the deepseek-go package
 package constants
 
 const (

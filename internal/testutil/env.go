@@ -1,4 +1,3 @@
-// Package testutil provides testing utilities for the DeepSeek client.
 package testutil
 
 import (
