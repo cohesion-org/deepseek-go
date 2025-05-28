@@ -1,3 +1,6 @@
+// Package deepseek provides client implementation for the Deepseek API.
+// This file implements the core client methods for creating chat completions,
+// streaming chat completions, and FIM (Fill In the Middle) completions.
 package deepseek
 
 import (
