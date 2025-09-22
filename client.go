@@ -27,7 +27,7 @@ func (c *Client) CreateChatCompletion(
 		SetBaseURL(c.BaseURL).
 		SetPath(c.Path).
 		SetBodyFromStruct(request).
-		Build(ctx)
+		BuildGet(ctx)
 
 	if err != nil {
 		return nil, fmt.Errorf("error building request: %w", err)
