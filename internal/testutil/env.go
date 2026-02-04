@@ -33,7 +33,7 @@ func LoadTestConfig(t *testing.T) *TestConfig {
 	apiKey = os.Getenv("TEST_DEEPSEEK_API_KEY")
 	if apiKey == "" {
 		apiKey = os.Getenv("DEEPSEEK_API_KEY")
-		t.Log("TEST_DEEPSEEK_API_KEY not ofund, trying DEEPSEEK_API_KEY from environment")
+		t.Log("TEST_DEEPSEEK_API_KEY not found, trying DEEPSEEK_API_KEY from environment")
 	}
 	config := &TestConfig{
 		APIKey:      apiKey,
