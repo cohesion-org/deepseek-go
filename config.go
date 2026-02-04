@@ -66,15 +66,12 @@ type Option func(*Client) error
 // - Timeout: 5 minutes
 func NewClientWithOptions(authToken string, opts ...Option) (*Client, error) {
 	// Check for empty auth token and try to use environment variable
+	// Considering that in some cases, users may not have set an API key for their model,
+	// we do not enforce validation here.
 	if authToken == "" {
 		if envKey, ok := os.LookupEnv("DEEPSEEK_API_KEY"); ok {
 			authToken = envKey
-		} else {
-			return nil, fmt.Errorf("authToken is empty and DEEPSEEK_API_KEY environment variable is not set")
 		}
-	}
-	if authToken == "" {
-		return nil, fmt.Errorf("authToken is empty. Please provide a valid token or set the DEEPSEEK_API_KEY environment variable.")
 	}
 
 	client := &Client{
