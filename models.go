@@ -14,7 +14,6 @@ const (
 	DeepSeekChat     = "deepseek-chat"     // DeepSeekChat is the official model for chat completions
 	DeepSeekCoder    = "deepseek-coder"    // DeepSeekCoder has been combined with DeepSeekChat, but you can still use it. Please read: https://api-docs.deepseek.com/updates#version-2024-09-05
 	DeepSeekReasoner = "deepseek-reasoner" // DeepSeekReasoner is the official model for reasoning completions
-	DeppSeekModel    = "model"
 )
 
 // External Models that can be used with the API
