@@ -112,7 +112,7 @@ type StreamChatCompletionRequest struct {
 	Tools            []Tool                  `json:"tools,omitempty"`             // Optional: List of tools
 	LogProbs         bool                    `json:"logprobs,omitempty"`          // Optional: Enable log probabilities
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // Optional: Number of top tokens with log probabilities, <= 20
-	EnableThinking   bool                    `json:"enable_thinking,omitempty"`   // Optional: Enable thinking (for qwen3 api)
+	Thinking         *ThinkingMode           `json:"thinking,omitempty"`          // Optional: Enable thinking mode. Set to &ThinkingMode{Type: "enabled"} to activate.
 }
 
 // Recv receives the next response from the stream.

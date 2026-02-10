@@ -2,10 +2,7 @@ package deepseek_test
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"testing"
-	"time"
 
 	"github.com/cohesion-org/deepseek-go"
 	"github.com/cohesion-org/deepseek-go/constants"
@@ -16,21 +13,9 @@ import (
 
 func TestThinkingModeCompletion(t *testing.T) {
 	testutil.SkipIfShort(t)
-	//config := testutil.LoadTestConfig(t)
-	dsUrl := os.Getenv("DeepSeek_Url")
-	config := &testutil.TestConfig{
-		APIKey:      "",
-		TestTimeout: 30 * time.Second,
-	}
-	client, _ := deepseek.NewClientWithOptions(config.APIKey,
-		deepseek.WithBaseURL(dsUrl),
-		deepseek.WithPath(os.Getenv("DeepSeek_Path")),
-		deepseek.WithTimeoutString("5m"))
+	config := testutil.LoadTestConfig(t)
 
-	fmt.Println(client.Path)
-
-	deepThinkPrompt, err := os.ReadFile("utils/deepthink.txt")
-	require.NoError(t, err, "failed to read reasoning content file")
+	client := deepseek.NewClient(config.APIKey)
 
 	tests := []struct {
 		name        string
@@ -39,23 +24,40 @@ func TestThinkingModeCompletion(t *testing.T) {
 		validateRes func(t *testing.T, res *deepseek.ChatCompletionResponse)
 	}{
 		{
-			name: "deep think chat model",
+			name: "thinking mode with deepseek-reasoner model",
 			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeppSeekModel,
+				Model: deepseek.DeepSeekReasoner,
 				Messages: []deepseek.ChatCompletionMessage{
-					{Role: constants.ChatMessageRoleUser, Content: "Should this AI system be allowed to make final diagnostic decisions without human oversight?"},
-					{Role: constants.ChatMessageRoleSystem, Content: string(deepThinkPrompt), Prefix: true},
+					{Role: constants.ChatMessageRoleUser, Content: "9.11 and 9.8, which is greater?"},
 				},
 			},
 			wantErr: false,
 			validateRes: func(t *testing.T, res *deepseek.ChatCompletionResponse) {
 				assert.NotEmpty(t, res.Choices[0].Message.Content)
+				assert.NotEmpty(t, res.Choices[0].Message.ReasoningContent, "reasoning content should be present in thinking mode")
+			},
+		},
+		{
+			name: "thinking mode with deepseek-chat and thinking parameter",
+			req: &deepseek.ChatCompletionRequest{
+				Model: deepseek.DeepSeekChat,
+				Messages: []deepseek.ChatCompletionMessage{
+					{Role: constants.ChatMessageRoleUser, Content: "How many Rs are there in the word 'strawberry'?"},
+				},
+				Thinking: &deepseek.ThinkingMode{Type: "enabled"},
+			},
+			wantErr: false,
+			validateRes: func(t *testing.T, res *deepseek.ChatCompletionResponse) {
+				assert.NotEmpty(t, res.Choices[0].Message.Content)
+				assert.NotEmpty(t, res.Choices[0].Message.ReasoningContent, "reasoning content should be present when thinking is enabled")
+				// Note: API returns deepseek-reasoner when thinking is enabled, even if deepseek-chat was requested
+				assert.Equal(t, deepseek.DeepSeekReasoner, res.Model, "model should be deepseek-reasoner when thinking is enabled")
 			},
 		},
 		{
 			name: "empty messages",
 			req: &deepseek.ChatCompletionRequest{
-				Model:    deepseek.DeppSeekModel,
+				Model:    deepseek.DeepSeekChat,
 				Messages: []deepseek.ChatCompletionMessage{},
 			},
 			wantErr: true,
@@ -86,7 +88,6 @@ func TestThinkingModeCompletion(t *testing.T) {
 			assert.NotEmpty(t, resp.ID)
 			assert.NotEmpty(t, resp.Created)
 			assert.Equal(t, "chat.completion", resp.Object)
-			assert.Equal(t, tt.req.Model, resp.Model)
 			assert.NotEmpty(t, resp.Choices)
 			assert.NotNil(t, resp.Usage)
 
