@@ -71,6 +71,11 @@ type ResponseFormat struct {
 	Type string `json:"type"` // The desired response format, either "text" or "json_object".
 }
 
+// ThinkingMode defines the structure for enabling thinking mode.
+type ThinkingMode struct {
+	Type string `json:"type"` // The thinking mode type, should be "enabled" to activate thinking mode.
+}
+
 // ChatCompletionRequest defines the structure for a chat completion request.
 type ChatCompletionRequest struct {
 	Model            string                  `json:"model"`                       // The ID of the model to use (required).
@@ -87,6 +92,5 @@ type ChatCompletionRequest struct {
 	LogProbs         bool                    `json:"logprobs,omitempty"`          // Whether to return log probabilities of the most likely tokens (optional).
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // The number of top most likely tokens to return log probabilities for (optional).
 	JSONMode         bool                    `json:"json,omitempty"`              // [deepseek-go feature] Optional: Enable JSON mode. If you're using the JSON mode, please mention "json" anywhere in your prompt, and also include the JSON schema in the request.
-	EnableThinking   bool                    `json:"enable_thinking,omitempty"`   // Optional: Enable thinking (for qwen3 api)
-	extraFields      map[string]interface{}  `json:"extra_fields,omitempty"`      //for some extra param, such as enabled
+	Thinking         *ThinkingMode           `json:"thinking,omitempty"`          // Optional: Enable thinking mode. Set to &ThinkingMode{Type: "enabled"} to activate.
 }

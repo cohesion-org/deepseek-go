@@ -17,17 +17,6 @@ func (c *Client) CreateChatCompletion(
 		return nil, fmt.Errorf("request cannot be nil")
 	}
 
-	//deepseek enable the thinking mode, but has some difference with qwen, you can use this feature to enable the thinking mode
-	//you can also set some extra values in it
-	if request.extraFields == nil {
-		request.extraFields = make(map[string]interface{})
-	}
-	if request.EnableThinking {
-		request.extraFields["chat_template_kwargs"] = map[string]map[string]string{
-			"thinking": {"type": "enabled"},
-		}
-	}
-
 	ctx, tcancel, err := getTimeoutContext(ctx, c.Timeout)
 	if err != nil {
 		return nil, fmt.Errorf("error getting timeout context: %w", err)
