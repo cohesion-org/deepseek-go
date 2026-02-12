@@ -165,6 +165,18 @@ func TestNewClientWithOptions_EmptyAuthToken(t *testing.T) {
 			}
 		})
 	}
+
+	// Test that WithoutAPIKeyValidation allows empty token
+	t.Run("empty token with WithoutAPIKeyValidation", func(t *testing.T) {
+		t.Setenv("DEEPSEEK_API_KEY", "")
+		client, err := deepseek.NewClientWithOptions("", deepseek.WithoutAPIKeyValidation())
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+		if client == nil {
+			t.Error("expected non-nil client, got nil")
+		}
+	})
 }
 
 func TestWithTimeoutString(t *testing.T) {

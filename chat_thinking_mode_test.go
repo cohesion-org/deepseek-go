@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/cohesion-org/deepseek-go"
 	"github.com/cohesion-org/deepseek-go/constants"
@@ -16,16 +15,12 @@ import (
 
 func TestThinkingModeCompletion(t *testing.T) {
 	testutil.SkipIfShort(t)
-	//config := testutil.LoadTestConfig(t)
-	dsUrl := os.Getenv("DEEPSEEK_URL")
-	config := &testutil.TestConfig{
-		APIKey:      "",
-		TestTimeout: 30 * time.Second,
-	}
-	client, _ := deepseek.NewClientWithOptions(config.APIKey,
-		deepseek.WithBaseURL(dsUrl),
-		deepseek.WithPath(os.Getenv("DEEPSEEK_PATH")),
-		deepseek.WithTimeoutString("5m"))
+
+	config := testutil.LoadTestConfig(t)
+	client, _ := deepseek.NewClientWithOptions(
+		config.APIKey,
+		deepseek.WithTimeoutString("5m"),
+	)
 
 	fmt.Println(client.Path)
 
