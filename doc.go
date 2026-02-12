@@ -14,7 +14,8 @@
 //
 // - Token Management: Track token usage and estimate token counts for requests.
 //
-// - Flexible Configuration: Customize client behavior with options for base URLs, timeouts, and HTTP clients.
+// - Flexible Configuration: Customize client behavior with options for base URLs, timeouts, HTTP clients,
+//   and API key validation (use WithoutAPIKeyValidation for local model servers that don't require auth).
 //
 // - Balance Tracking: Check account balance and usage information.
 //

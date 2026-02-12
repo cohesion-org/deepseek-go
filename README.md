@@ -480,6 +480,18 @@ func main() {
     fmt.Printf("Client initialized with BaseURL: %s and Timeout: %v\n", client.BaseURL, client.Timeout)
 }
  ```
+
+**Using local model servers without an API key:**
+
+By default, `NewClientWithOptions` requires an API key. If you're connecting to a local model server (e.g., vLLM, llama.cpp, LocalAI) that doesn't require authentication, use `WithoutAPIKeyValidation()`:
+
+```go
+client, err := deepseek.NewClientWithOptions("",
+    deepseek.WithBaseURL("<BASE_URL>"),
+    deepseek.WithoutAPIKeyValidation(),
+)
+```
+
 See the examples folder for more information.
 </details>
 
