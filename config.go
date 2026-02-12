@@ -24,6 +24,8 @@ type Client struct {
 	Path      string        // The path for the API request. Defaults to "chat/completions"
 
 	HTTPClient HTTPDoer // The HTTP client to send the request and get the response
+
+	skipAPIKeyValidation bool // If true, skip API key validation (for local model servers)
 }
 
 // NewClient creates a new client with an authentication token and an optional custom baseURL.
@@ -61,6 +63,7 @@ func NewClient(AuthToken string, baseURL ...string) *Client {
 type Option func(*Client) error
 
 // NewClientWithOptions creates a new client with required authentication token and optional configurations.
+// By default, an API key is required. Use WithoutAPIKeyValidation to disable this for local model servers.
 // Defaults:
 // - BaseURL: "https://api.deepseek.com/"
 // - Timeout: 5 minutes
@@ -69,12 +72,7 @@ func NewClientWithOptions(authToken string, opts ...Option) (*Client, error) {
 	if authToken == "" {
 		if envKey, ok := os.LookupEnv("DEEPSEEK_API_KEY"); ok {
 			authToken = envKey
-		} else {
-			return nil, fmt.Errorf("authToken is empty and DEEPSEEK_API_KEY environment variable is not set")
 		}
-	}
-	if authToken == "" {
-		return nil, fmt.Errorf("authToken is empty. Please provide a valid token or set the DEEPSEEK_API_KEY environment variable.")
 	}
 
 	client := &Client{
@@ -88,6 +86,11 @@ func NewClientWithOptions(authToken string, opts ...Option) (*Client, error) {
 		if err := opt(client); err != nil {
 			return nil, fmt.Errorf("failed to apply option: %w", err)
 		}
+	}
+
+	// Enforce API key after all options are applied, unless validation is explicitly disabled
+	if client.AuthToken == "" && !client.skipAPIKeyValidation {
+		return nil, fmt.Errorf("authToken is empty. Please provide a valid token, set the DEEPSEEK_API_KEY environment variable, or use WithoutAPIKeyValidation() for local model servers")
 	}
 
 	return client, nil
@@ -132,6 +135,16 @@ func WithPath(path string) Option {
 	}
 	return func(c *Client) error {
 		c.Path = path
+		return nil
+	}
+}
+
+// WithoutAPIKeyValidation disables API key validation.
+// Use this when connecting to local model servers (e.g., vLLM, llama.cpp, LocalAI)
+// that do not require authentication.
+func WithoutAPIKeyValidation() Option {
+	return func(c *Client) error {
+		c.skipAPIKeyValidation = true
 		return nil
 	}
 }
