@@ -643,12 +643,17 @@ You can find all information about it at [Ollama Docs](/examples/ollama.md).
    cp .env.example .env
    ```
 
-2. Add your DeepSeek API key to `.env`:
+2. Add your DeepSeek API key to `.env` if you plan to run live integration tests:
    ```
    TEST_DEEPSEEK_API_KEY=your_api_key_here
    ```
 
-3. (Optional) Configure test timeout:
+3. (Optional) Add your OpenRouter key if you plan to run the integration image tests:
+   ```
+   OPENROUTER_API_KEY=your_openrouter_key_here
+   ```
+
+4. (Optional) Configure test timeout:
    ```
    # Default is 30s, increase for slower connections
    TEST_TIMEOUT=1m
@@ -676,12 +681,14 @@ The tests are organized into several files and folders:
 
 ### Running Tests
 
-1. Run all tests (requires API key):
+1. Run the default offline test suite:
    ```bash
    go test -v ./...
    ```
 
-2. Run tests in short mode (skips API calls):
+   This uses the built-in mock DeepSeek server for the package's API contract tests, so it does not require a DeepSeek API key.
+
+2. Run tests in short mode:
    ```bash
    go test -v -short ./...
    ```
@@ -701,7 +708,24 @@ The tests are organized into several files and folders:
    go tool cover -html=coverage.txt
    ```
 
-5. Run specific test:
+5. Run the live integration lane against the real APIs:
+   ```bash
+   DEEPSEEK_LIVE_TESTS=1 go test -v -tags=integration ./...
+   ```
+
+   Notes:
+   `TEST_DEEPSEEK_API_KEY` or `DEEPSEEK_API_KEY` is required for the DeepSeek integration tests.
+   `OPENROUTER_API_KEY` is also required for the image/OpenRouter integration tests.
+
+6. Use the Makefile shortcuts:
+   ```bash
+   make test
+   make test-short
+   make test-race
+   make test-integration
+   ```
+
+7. Run a specific test:
    ```bash
    # Example: Run only chat completion tests
    go test -v -run TestCreateChatCompletion ./...

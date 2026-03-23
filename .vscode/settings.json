@@ -2,5 +2,9 @@
     "cSpell.words": [
         "DEEPSEEK",
         "dylib"
-    ]
+    ],
+    "go.testTags": "integration demo",
+    "go.testEnvVars": {
+        "DEEPSEEK_LIVE_TESTS": "1"
+    }
 }
