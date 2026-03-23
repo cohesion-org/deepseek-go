@@ -1,3 +1,4 @@
+// Package constants contains shared role constants used across DeepSeek request and response types.
 package constants
 
 const (

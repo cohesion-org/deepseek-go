@@ -30,7 +30,7 @@ func TestChatCompletionWithOllama(t *testing.T) {
 		t.Fatal("Expected non-empty response")
 	}
 
-	t.Logf("The reponse is: %v", res)
+	t.Logf("The response is: %v", res)
 
 }
 
@@ -87,7 +87,9 @@ func TestChatCompletionWithOllamaStream(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer res.Close()
+	defer func() {
+		_ = res.Close()
+	}()
 	fullMessage := ""
 
 	for {
@@ -109,7 +111,7 @@ func TestChatCompletionWithOllamaStream(t *testing.T) {
 		t.Fatal("Expected non-empty response")
 	}
 
-	t.Logf("The reponse is: %s", fullMessage)
+	t.Logf("The response is: %s", fullMessage)
 
 }
 
@@ -138,7 +140,7 @@ func TestChatCompletionWithOllamaWithImage(t *testing.T) {
 		t.Fatal("Expected non-empty response")
 	}
 
-	t.Logf("The reponse content is: %s", res.Choices[0].Message.Content)
+	t.Logf("The response content is: %s", res.Choices[0].Message.Content)
 
 }
 
@@ -165,7 +167,9 @@ func TestChatCompletionWithOllamaStreamWithImage(t *testing.T) {
 		t.Fatalf("The error is %s", err)
 	}
 
-	defer res.Close()
+	defer func() {
+		_ = res.Close()
+	}()
 	fullMessage := ""
 
 	for {
@@ -187,6 +191,6 @@ func TestChatCompletionWithOllamaStreamWithImage(t *testing.T) {
 		t.Fatal("Expected non-empty response")
 	}
 
-	t.Logf("The reponse is: %s", fullMessage)
+	t.Logf("The response is: %s", fullMessage)
 
 }

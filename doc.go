@@ -3,19 +3,19 @@
 //
 // Features:
 //
-// - Chat Completion: Send chat messages and receive responses from Deepseek's AI models with support for both
-//   regular and streaming responses.
+//   - Chat Completion: Send chat messages and receive responses from Deepseek's AI models with support for both
+//     regular and streaming responses.
 //
-// - Model Support: Access to official Deepseek models (DeepSeekChat, DeepSeekCoder, DeepSeekReasoner) and
-//   external providers like OpenRouter, Azure, and Ollama.
+//   - Model Support: Access to official Deepseek models (DeepSeekChat, DeepSeekCoder, DeepSeekReasoner) and
+//     external providers like OpenRouter, Azure, and Ollama.
 //
-// - Advanced Features: Support for Fill-In-the-Middle (FIM) completions, JSON mode for structured outputs,
-//   function calling, and image processing capabilities.
+//   - Advanced Features: Support for Fill-In-the-Middle (FIM) completions, JSON mode for structured outputs,
+//     function calling, and image processing capabilities.
 //
 // - Token Management: Track token usage and estimate token counts for requests.
 //
-// - Flexible Configuration: Customize client behavior with options for base URLs, timeouts, HTTP clients,
-//   and API key validation (use WithoutAPIKeyValidation for local model servers that don't require auth).
+//   - Flexible Configuration: Customize client behavior with options for base URLs, timeouts, HTTP clients,
+//     and API key validation (use WithoutAPIKeyValidation for local model servers that don't require auth).
 //
 // - Balance Tracking: Check account balance and usage information.
 //

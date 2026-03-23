@@ -35,3 +35,5 @@ python
 # local files for the maintainer
 demo_test.go
 issue.md
+.DS_Store
+.bin/

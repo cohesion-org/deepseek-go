@@ -26,7 +26,9 @@ func IsOllamaRunning() bool {
 	if err != nil {
 		return false
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 	return resp.StatusCode == http.StatusOK
 }
 
@@ -169,7 +171,7 @@ func CreateOllamaChatCompletion(req *ChatCompletionRequest) (ChatCompletionRespo
 	return *convertedResponse, nil
 }
 
-// CreateOllamaChatCompletionStream sends a chat completion request with stream = true and returns the delta
+// CreateOllamaChatCompletionStream sends a chat completion request with stream enabled and returns the delta stream.
 func CreateOllamaChatCompletionStream(
 	ctx context.Context,
 	request *StreamChatCompletionRequest,
@@ -184,7 +186,7 @@ func CreateOllamaChatCompletionStream(
 	c := Client{
 		BaseURL: "http://localhost:11434",
 	}
-	var s bool = true
+	var s = true
 	// Convert messages to Ollama format
 	ollamaRequest := &api.ChatRequest{
 		Model:    request.Model,
@@ -317,7 +319,7 @@ func CreateOllamaChatCompletionWithImage(req *ChatCompletionRequestWithImage) (C
 	return *convertedResponse, nil
 }
 
-// CreateOllamaChatCompletionStream sends a chat completion request with stream = true and returns the delta
+// CreateOllamaChatCompletionStreamWithImage sends a streaming chat completion request with image content and returns the delta stream.
 func CreateOllamaChatCompletionStreamWithImage(
 	ctx context.Context,
 	request *StreamChatCompletionRequestWithImage,
@@ -335,7 +337,7 @@ func CreateOllamaChatCompletionStreamWithImage(
 	if err != nil {
 		return nil, fmt.Errorf("error converting messages: %w", err)
 	}
-	var s bool = true
+	var s = true
 	ollamaRequest := &api.ChatRequest{
 		Model:    request.Model,
 		Messages: messages,
