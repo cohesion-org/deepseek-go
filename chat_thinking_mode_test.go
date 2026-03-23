@@ -2,30 +2,18 @@ package deepseek_test
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"testing"
 
 	"github.com/cohesion-org/deepseek-go"
-	"github.com/cohesion-org/deepseek-go/constants"
 	"github.com/cohesion-org/deepseek-go/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestThinkingModeCompletion(t *testing.T) {
-	testutil.SkipIfShort(t)
-
-	config := testutil.LoadTestConfig(t)
-	client, _ := deepseek.NewClientWithOptions(
-		config.APIKey,
-		deepseek.WithTimeoutString("5m"),
-	)
-
-	fmt.Println(client.Path)
-
-	deepThinkPrompt, err := os.ReadFile("utils/deepthink.txt")
-	require.NoError(t, err, "failed to read reasoning content file")
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockClient(t, server)
 
 	tests := []struct {
 		name        string
@@ -36,21 +24,21 @@ func TestThinkingModeCompletion(t *testing.T) {
 		{
 			name: "deep think chat model",
 			req: &deepseek.ChatCompletionRequest{
-				Model: os.Getenv("DEEPSEEK_MODEL_NAME"),
+				Model: deepseek.DeepSeekReasoner,
 				Messages: []deepseek.ChatCompletionMessage{
-					{Role: constants.ChatMessageRoleUser, Content: "Should this AI system be allowed to make final diagnostic decisions without human oversight?"},
-					{Role: constants.ChatMessageRoleSystem, Content: string(deepThinkPrompt), Prefix: true},
+					{Role: deepseek.ChatMessageRoleUser, Content: "Should this AI system be allowed to make final diagnostic decisions without human oversight?"},
 				},
 			},
 			wantErr: false,
 			validateRes: func(t *testing.T, res *deepseek.ChatCompletionResponse) {
 				assert.NotEmpty(t, res.Choices[0].Message.Content)
+				assert.NotEmpty(t, res.Choices[0].Message.ReasoningContent)
 			},
 		},
 		{
 			name: "empty messages",
 			req: &deepseek.ChatCompletionRequest{
-				Model:    os.Getenv("DEEPSEEK_MODEL_NAME"),
+				Model:    deepseek.DeepSeekReasoner,
 				Messages: []deepseek.ChatCompletionMessage{},
 			},
 			wantErr: true,
@@ -64,10 +52,7 @@ func TestThinkingModeCompletion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-			defer cancel()
-
-			resp, err := client.CreateChatCompletion(ctx, tt.req)
+			resp, err := client.CreateChatCompletion(context.Background(), tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, resp)

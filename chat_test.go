@@ -12,9 +12,9 @@ import (
 )
 
 func TestCreateChatCompletion(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockClient(t, server)
 
 	tests := []struct {
 		name        string
@@ -52,10 +52,7 @@ func TestCreateChatCompletion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-			defer cancel()
-
-			resp, err := client.CreateChatCompletion(ctx, tt.req)
+			resp, err := client.CreateChatCompletion(context.Background(), tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
@@ -82,11 +79,10 @@ func TestCreateChatCompletion(t *testing.T) {
 }
 
 func TestMultiChatConversation(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
-	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-	defer cancel()
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockClient(t, server)
+	ctx := context.Background()
 
 	// Initial message setup
 	messages := []deepseek.ChatCompletionMessage{{

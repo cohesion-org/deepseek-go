@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/cohesion-org/deepseek-go"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreateChatCompletion_NilRequest(t *testing.T) {
@@ -27,7 +28,8 @@ func TestCreateChatCompletion_NilRequest(t *testing.T) {
 func TestCreateChatCompletion_ErrorHandling(t *testing.T) {
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error": {"message": "invalid request"}}`))
+		_, err := w.Write([]byte(`{"error": {"message": "invalid request"}}`))
+		require.NoError(t, err)
 	}))
 	defer testServer.Close()
 
@@ -53,7 +55,8 @@ func TestCreateChatCompletion_ErrorHandling(t *testing.T) {
 func TestCreateChatCompletionStream_ErrorHandling(t *testing.T) {
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error": {"message": "stream error"}}`))
+		_, err := w.Write([]byte(`{"error": {"message": "stream error"}}`))
+		require.NoError(t, err)
 	}))
 	defer testServer.Close()
 

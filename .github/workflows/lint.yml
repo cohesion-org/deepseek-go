@@ -13,14 +13,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        gov: [1.23]
+        gov: ["1.24"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       
       - name: Set up Go ${{ matrix.gov }}
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.gov }}
+          cache: true
 
       # Install required packages including git
       - name: Install required packages
@@ -28,15 +29,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ca-certificates git
           sudo update-ca-certificates
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-          cache: true
   
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: latest
-          args: --timeout=5m
+      - name: Run lint
+        run: make lint

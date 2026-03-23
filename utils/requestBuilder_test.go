@@ -83,7 +83,8 @@ func TestAuthedRequestBuilder(t *testing.T) {
 
 			// Verify body
 			buf := new(bytes.Buffer)
-			buf.ReadFrom(req.Body)
+			_, err = buf.ReadFrom(req.Body)
+			require.NoError(t, err)
 			assert.JSONEq(t, string(expectedBody), buf.String())
 
 			// Verify context

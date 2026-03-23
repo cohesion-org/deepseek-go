@@ -14,15 +14,17 @@ func TestNewCleint(t *testing.T) {
 	testutil.SkipIfShort(t)
 	// test empty api key with no env fallback
 	t.Run("empty api key with no env fallback", func(t *testing.T) {
-		os.Unsetenv("DEEPSEEK_API_KEY")
+		_ = os.Unsetenv("DEEPSEEK_API_KEY")
 		client := deepseek.NewClient("")
 		require.Nil(t, client)
 	})
 
 	// test empty api key with env fallback
 	t.Run("empty api key with env fallback", func(t *testing.T) {
-		os.Setenv("DEEPSEEK_API_KEY", "test")
-		defer os.Unsetenv("DEEPSEEK_API_KEY")
+		require.NoError(t, os.Setenv("DEEPSEEK_API_KEY", "test"))
+		defer func() {
+			_ = os.Unsetenv("DEEPSEEK_API_KEY")
+		}()
 
 		client := deepseek.NewClient("")
 		require.NotNil(t, client)

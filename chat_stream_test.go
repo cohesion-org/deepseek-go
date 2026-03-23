@@ -15,14 +15,11 @@ import (
 )
 
 func TestCreateChatCompletionStream(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockClient(t, server)
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-	defer cancel()
-
-	stream, err := client.CreateChatCompletionStream(ctx, &deepseek.StreamChatCompletionRequest{
+	stream, err := client.CreateChatCompletionStream(context.Background(), &deepseek.StreamChatCompletionRequest{
 		Model: deepseek.DeepSeekChat,
 		Messages: []deepseek.ChatCompletionMessage{
 			{
@@ -32,7 +29,9 @@ func TestCreateChatCompletionStream(t *testing.T) {
 		},
 	})
 	require.NoError(t, err)
-	defer stream.Close()
+	defer func() {
+		_ = stream.Close()
+	}()
 
 	var contentBuffer string
 	var receivedFinishReason bool
@@ -57,11 +56,10 @@ func TestCreateChatCompletionStream(t *testing.T) {
 }
 
 func TestStreamingMultiChat(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
-	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-	defer cancel()
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockClient(t, server)
+	ctx := context.Background()
 
 	var messages []deepseek.ChatCompletionMessage
 
@@ -72,7 +70,7 @@ func TestStreamingMultiChat(t *testing.T) {
 			Content: "What's the highest mountain in the world? Respond with only the name.",
 		}}
 
-		response, err := streamChatCompletion(t, ctx, client, messages)
+		response, err := streamChatCompletion(ctx, t, client, messages)
 		require.NoError(t, err, "initial streaming should succeed")
 		assert.NotEmpty(t, response, "response should not be empty")
 		assert.Contains(t, response, "Everest", "should identify Mount Everest")
@@ -91,7 +89,7 @@ func TestStreamingMultiChat(t *testing.T) {
 			Content: "What's the second highest? Respond with only the name.",
 		})
 
-		response, err := streamChatCompletion(t, ctx, client, messages)
+		response, err := streamChatCompletion(ctx, t, client, messages)
 		require.NoError(t, err, "follow-up streaming should succeed")
 		assert.NotEmpty(t, response, "response should not be empty")
 		assert.Contains(t, response, "K2", "should identify K2 mountain")
@@ -105,8 +103,8 @@ func TestStreamingMultiChat(t *testing.T) {
 }
 
 func streamChatCompletion(
-	t *testing.T,
 	ctx context.Context,
+	t *testing.T,
 	client *deepseek.Client,
 	messages []deepseek.ChatCompletionMessage,
 ) (string, error) {
@@ -159,13 +157,10 @@ func streamChatCompletion(
 
 // TestStreamingWithToolCalls tests the streaming of a tool call.
 func TestStreamingWithToolCalls(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
-	}
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
-	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-	defer cancel()
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockClient(t, server)
+	ctx := context.Background()
 
 	var message = []deepseek.ChatCompletionMessage{
 		{
@@ -204,7 +199,9 @@ func TestStreamingWithToolCalls(t *testing.T) {
 
 	stream, err := client.CreateChatCompletionStream(ctx, req)
 	require.NoError(t, err)
-	defer stream.Close()
+	defer func() {
+		_ = stream.Close()
+	}()
 
 	var fullMessage string
 	var toolCallCount int

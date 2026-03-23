@@ -42,8 +42,10 @@ type APIModels struct {
 
 // ListAllModels sends a request to the API to get all available models.
 func ListAllModels(c *Client, ctx context.Context) (*APIModels, error) {
+	baseURL := resolveBaseURL(c.BaseURL, "https://api.deepseek.com/")
+
 	req, err := utils.NewRequestBuilder(c.AuthToken).
-		SetBaseURL("https://api.deepseek.com/").
+		SetBaseURL(baseURL).
 		SetPath("models").
 		BuildGet(ctx)
 
@@ -56,7 +58,9 @@ func ListAllModels(c *Client, ctx context.Context) (*APIModels, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode >= 400 {
 		return nil, HandleAPIError(resp)

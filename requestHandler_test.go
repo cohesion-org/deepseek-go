@@ -16,7 +16,7 @@ import (
 
 func TestHandleSendChatCompletionRequest(t *testing.T) {
 	t.Run("successful request", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(http.StatusOK)
 		}))
 		defer ts.Close()
@@ -27,7 +27,9 @@ func TestHandleSendChatCompletionRequest(t *testing.T) {
 
 		resp, err := deepseek.HandleSendChatCompletionRequest(*c, req)
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() {
+			_ = resp.Body.Close()
+		}()
 
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 	})
@@ -45,7 +47,7 @@ func TestHandleSendChatCompletionRequest(t *testing.T) {
 
 func TestHandleNormalRequest(t *testing.T) {
 	t.Run("successful request", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(http.StatusOK)
 		}))
 		defer ts.Close()
@@ -55,7 +57,9 @@ func TestHandleNormalRequest(t *testing.T) {
 
 		resp, err := deepseek.HandleNormalRequest(*c, req)
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() {
+			_ = resp.Body.Close()
+		}()
 
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 	})
@@ -75,7 +79,7 @@ func TestHandleNormalRequest(t *testing.T) {
 func TestTimeoutConfiguration(t *testing.T) {
 	t.Run("chat completion timeout", func(t *testing.T) {
 		start := time.Now()
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			time.Sleep(250 * time.Millisecond)
 			w.WriteHeader(http.StatusOK)
 		}))
@@ -86,14 +90,16 @@ func TestTimeoutConfiguration(t *testing.T) {
 		c := deepseek.NewClient("test", ts.URL)
 		resp, err := deepseek.HandleSendChatCompletionRequest(*c, req)
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() {
+			_ = resp.Body.Close()
+		}()
 
 		// Verify timeout configuration isn't too short
 		assert.WithinDuration(t, start, time.Now(), 300*time.Millisecond)
 	})
 
 	t.Run("normal request timeout", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			time.Sleep(50 * time.Millisecond)
 			w.WriteHeader(http.StatusOK)
 		}))
@@ -106,7 +112,9 @@ func TestTimeoutConfiguration(t *testing.T) {
 		c := deepseek.NewClient("test", ts.URL)
 		resp, err := deepseek.HandleNormalRequest(*c, req)
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() {
+			_ = resp.Body.Close()
+		}()
 
 		// Verify timeout allows successful completion
 		assert.WithinDuration(t, start, time.Now(), 100*time.Millisecond)
@@ -116,7 +124,7 @@ func TestTimeoutConfiguration(t *testing.T) {
 func TestErrorTimeout(t *testing.T) {
 	t.Run("client timeout preservation", func(t *testing.T) {
 		// Create test server that responds slower than client timeout
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 			time.Sleep(250 * time.Millisecond) // Longer than client timeout
 		}))
 		defer ts.Close()
@@ -155,7 +163,9 @@ func TestHandleTimeoutApplication(t *testing.T) {
 
 	t.Run("custom timeout from environment variable", func(t *testing.T) {
 		_ = os.Setenv("DEEPSEEK_TIMEOUT", "30s")
-		defer os.Unsetenv("DEEPSEEK_TIMEOUT")
+		defer func() {
+			_ = os.Unsetenv("DEEPSEEK_TIMEOUT")
+		}()
 
 		expectedTimeout := 30 * time.Second
 
@@ -170,7 +180,9 @@ func TestHandleTimeoutApplication(t *testing.T) {
 
 	t.Run("invalid timeout format returns error", func(t *testing.T) {
 		_ = os.Setenv("DEEPSEEK_TIMEOUT", "invalid")
-		defer os.Unsetenv("DEEPSEEK_TIMEOUT")
+		defer func() {
+			_ = os.Unsetenv("DEEPSEEK_TIMEOUT")
+		}()
 
 		timeout, err := deepseek.HandleTimeout()
 		assert.Error(t, err, "Expected error for invalid timeout format")

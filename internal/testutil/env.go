@@ -1,3 +1,4 @@
+// Package testutil contains shared helpers for offline and live test execution.
 package testutil
 
 import (
@@ -25,8 +26,8 @@ func LoadTestConfig(t *testing.T) *TestConfig {
 	}
 
 	defer func() {
-		os.Unsetenv("TEST_DEEPSEEK_API_KEY")
-		os.Unsetenv("TEST_TIMEOUT")
+		_ = os.Unsetenv("TEST_DEEPSEEK_API_KEY")
+		_ = os.Unsetenv("TEST_TIMEOUT")
 	}()
 
 	var apiKey string

@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -13,15 +14,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        gov: [1.23]
+        gov: ["1.24"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       
       - name: Set up Go ${{ matrix.gov }}
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.gov }}
+          cache: true
         id: go
 
       # Install required packages including git
@@ -37,8 +39,5 @@ jobs:
           git config --global http.sslVerify true
           go mod download
         
-      - name: Run tests
-        run: go test -v
-        env:
-          TEST_DEEPSEEK_API_KEY: ${{ secrets.TEST_DEEPSEEK_API_KEY }}
-          TEST_TIMEOUT: ${{ secrets.TEST_TIMEOUT }}
+      - name: Run offline test suite
+        run: make test

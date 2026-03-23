@@ -20,7 +20,7 @@ const (
 var (
 	// ErrChatCompletionStreamNotSupported is returned when streaming is not supported with the method.
 	ErrChatCompletionStreamNotSupported = errors.New("streaming is not supported with this method")
-	// ErrChatCompletionRequestNil is returned when the request is nil.
+	// ErrUnexpectedResponseFormat is returned when the response format does not match the expected chat completion structure.
 	ErrUnexpectedResponseFormat = errors.New("unexpected response format")
 )
 
@@ -86,7 +86,8 @@ type ChatCompletionRequest struct {
 	ToolChoice       interface{}             `json:"tool_choice,omitempty"`       // Controls which (if any) tool is called by the model (optional).
 	LogProbs         bool                    `json:"logprobs,omitempty"`          // Whether to return log probabilities of the most likely tokens (optional).
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // The number of top most likely tokens to return log probabilities for (optional).
+	Thinking         *ThinkingConfig         `json:"thinking,omitempty"`          // Optional: Official DeepSeek thinking configuration.
 	JSONMode         bool                    `json:"json,omitempty"`              // [deepseek-go feature] Optional: Enable JSON mode. If you're using the JSON mode, please mention "json" anywhere in your prompt, and also include the JSON schema in the request.
-	EnableThinking   bool                    `json:"enable_thinking,omitempty"`   // Optional: Enable thinking (for qwen3 api)
-	ExtraFields      map[string]interface{}  `json:"extra_fields,omitempty"`      //for some extra param, such as enabled
+	EnableThinking   bool                    `json:"enable_thinking,omitempty"`   // Legacy convenience flag. Library requests normalize this to top-level "thinking": {"type":"enabled"}.
+	ExtraFields      map[string]interface{}  `json:"extra_fields,omitempty"`      // Legacy passthrough fields. Library requests merge these into the top-level payload.
 }

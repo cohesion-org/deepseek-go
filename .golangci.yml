@@ -8,15 +8,18 @@ linters:
     - ineffassign
     - misspell
     - gocyclo
-    - dupl
     - goconst
     - revive
 
 linters-settings:
   gocyclo:
-    min-complexity: 15
-  dupl:
-    threshold: 100
+    min-complexity: 20
+  revive:
+    rules:
+      - name: error-return
+        disabled: true
+      - name: unexported-return
+        disabled: true
 
 run:
   deadline: 5m

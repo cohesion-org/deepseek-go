@@ -1,3 +1,4 @@
+// Package utils contains internal HTTP request helpers used by the DeepSeek client.
 package utils
 
 import (

@@ -2,6 +2,7 @@ package deepseek
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/cohesion-org/deepseek-go/constants"
 )
@@ -18,15 +19,17 @@ func MapMessageToChatCompletionMessage(m Message) (ChatCompletionMessage, error)
 		return ChatCompletionMessage{}, errors.New("message role cannot be empty")
 	}
 
-	if m.Content == "" {
-		return ChatCompletionMessage{}, errors.New("message content cannot be empty")
+	if m.Content == "" && m.ReasoningContent == "" && len(m.ToolCalls) == 0 {
+		return ChatCompletionMessage{}, errors.New("message content, reasoning content, and tool calls cannot all be empty")
 	}
 	if !validRoles[m.Role] {
-		return ChatCompletionMessage{}, errors.New("invalid role: %s. Valid roles are can be found in official deepseek documentation")
+		return ChatCompletionMessage{}, fmt.Errorf("invalid role: %s. Valid roles are can be found in official deepseek documentation", m.Role)
 	}
 
 	return ChatCompletionMessage{
-		Role:    m.Role,
-		Content: m.Content,
+		Role:             m.Role,
+		Content:          m.Content,
+		ReasoningContent: m.ReasoningContent,
+		ToolCalls:        m.ToolCalls,
 	}, nil
 }

@@ -36,7 +36,7 @@ type ChatCompletionMessageWithImage struct {
 	ToolCalls        []ToolCall `json:"tool_calls,omitempty"`        // List of tool calls
 }
 
-// ChatCompletionRequest defines the structure for a chat completion request.
+// ChatCompletionRequestWithImage defines the structure for a chat completion request with image input.
 type ChatCompletionRequestWithImage struct {
 	Model            string                           `json:"model"`                       // The ID of the model to use (required).
 	Messages         []ChatCompletionMessageWithImage `json:"messages"`                    // A list of messages comprising the conversation (required).
@@ -72,7 +72,7 @@ type StreamChatCompletionRequestWithImage struct {
 	TopLogProbs      int                              `json:"top_logprobs,omitempty"`      // Optional: Number of top tokens with log probabilities, <= 20
 }
 
-// CreateChatCompletion sends a chat completion request and returns the generated response.
+// CreateChatCompletionWithImage sends a chat completion request with image content and returns the response.
 func (c *Client) CreateChatCompletionWithImage(
 	ctx context.Context,
 	request *ChatCompletionRequestWithImage,
@@ -101,7 +101,9 @@ func (c *Client) CreateChatCompletionWithImage(
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode >= 400 {
 		return nil, HandleAPIError(resp)
@@ -116,7 +118,7 @@ func (c *Client) CreateChatCompletionWithImage(
 	return updatedResp, err
 }
 
-// CreateChatCompletionStream sends a chat completion request with stream = true and returns the delta
+// CreateChatCompletionStreamWithImage sends a streaming chat completion request with image content and returns a stream.
 func (c *Client) CreateChatCompletionStreamWithImage(
 	ctx context.Context,
 	request *StreamChatCompletionRequestWithImage,
@@ -224,7 +226,9 @@ func handleImageFromURL(url string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to download image: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("failed to download image: %s", resp.Status)

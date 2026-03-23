@@ -49,9 +49,7 @@ type Message struct {
 	ToolCalls        []ToolCall `json:"tool_calls,omitempty"`        // Optional tool calls.
 }
 
-// Custom unmarshal to support both "reasoning_content" and "reasoning" fields.
-// This is necessary because the API may return either field, and we want to prefer "reasoning_content" if present.
-// OpenRouter API returns "reasoning" field in some cases.
+// UnmarshalJSON supports both "reasoning_content" and "reasoning" fields.
 func (m *Message) UnmarshalJSON(data []byte) error {
 	type Alias Message
 	aux := &struct {
