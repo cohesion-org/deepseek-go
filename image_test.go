@@ -1,3 +1,5 @@
+//go:build integration
+
 package deepseek_test
 
 import (
@@ -15,8 +17,7 @@ import (
 )
 
 func TestCreateChatCompletionWithImage(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
+	testutil.SkipUnlessLiveAPI(t)
 	if os.Getenv("OPENROUTER_API_KEY") == "" {
 		t.Skip("Skipping test: OPENROUTER_API_KEY not set")
 	}
@@ -68,10 +69,7 @@ func TestCreateChatCompletionWithImage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-			defer cancel()
-
-			resp, err := client.CreateChatCompletionWithImage(ctx, tt.req)
+			resp, err := client.CreateChatCompletionWithImage(context.Background(), tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
@@ -96,8 +94,7 @@ func TestCreateChatCompletionWithImage(t *testing.T) {
 }
 
 func TestCreateChatCompletionStreamWithImage(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
+	testutil.SkipUnlessLiveAPI(t)
 	if os.Getenv("OPENROUTER_API_KEY") == "" {
 		t.Skip("Skipping test: OPENROUTER_API_KEY not set")
 	}
@@ -133,10 +130,7 @@ func TestCreateChatCompletionStreamWithImage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-			defer cancel()
-
-			stream, err := client.CreateChatCompletionStreamWithImage(ctx, tt.req)
+			stream, err := client.CreateChatCompletionStreamWithImage(context.Background(), tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, stream)

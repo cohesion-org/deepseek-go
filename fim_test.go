@@ -12,9 +12,9 @@ import (
 )
 
 func TestCreateFIMCompletion(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockBetaClient(t, server)
 
 	tests := []struct {
 		name        string
@@ -62,10 +62,7 @@ func TestCreateFIMCompletion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-			defer cancel()
-
-			resp, err := client.CreateFIMCompletion(ctx, tt.req)
+			resp, err := client.CreateFIMCompletion(context.Background(), tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
@@ -93,9 +90,9 @@ func TestCreateFIMCompletion(t *testing.T) {
 }
 
 func TestCreateFIMCompletionWithParameters(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockBetaClient(t, server)
 
 	tests := []struct {
 		name        string
@@ -129,10 +126,7 @@ func TestCreateFIMCompletionWithParameters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-			defer cancel()
-
-			resp, err := client.CreateFIMCompletion(ctx, tt.req)
+			resp, err := client.CreateFIMCompletion(context.Background(), tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
@@ -160,19 +154,16 @@ func TestCreateFIMCompletionWithParameters(t *testing.T) {
 }
 
 func TestFIMCompletionResponseStructure(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockBetaClient(t, server)
 
 	req := &deepseek.FIMCompletionRequest{
 		Model:  deepseek.DeepSeekChat,
 		Prompt: "func main() {\n    fmt.Println(\"hel",
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-	defer cancel()
-
-	resp, err := client.CreateFIMCompletion(ctx, req)
+	resp, err := client.CreateFIMCompletion(context.Background(), req)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 

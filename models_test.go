@@ -11,14 +11,11 @@ import (
 )
 
 func TestListAllModels(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-	defer cancel()
-
-	resp, err := deepseek.ListAllModels(client, ctx)
+	client := testutil.NewMockClient(t, server)
+	resp, err := deepseek.ListAllModels(client, context.Background())
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
 
@@ -33,13 +30,13 @@ func TestListAllModels(t *testing.T) {
 		assert.Equal(t, "deepseek", model.OwnedBy)
 
 		// Verify known models exist in constants.go
-		if model.ID == deepseek.DeepSeekChat ||
-			model.ID == deepseek.DeepSeekCoder ||
-			model.ID == deepseek.DeepSeekReasoner {
+		if model.ID == "deepseek-chat" ||
+			model.ID == "deepseek-coder" ||
+			model.ID == "deepseek-reasoner" {
 			assert.Contains(t, []string{
-				deepseek.DeepSeekChat,
-				deepseek.DeepSeekCoder,
-				deepseek.DeepSeekReasoner,
+				"deepseek-chat",
+				"deepseek-coder",
+				"deepseek-reasoner",
 			}, model.ID)
 		}
 	}

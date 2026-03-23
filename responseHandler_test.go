@@ -197,7 +197,9 @@ func TestHandleChatCompletionResponse(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer tt.response.Body.Close()
+			defer func() {
+				_ = tt.response.Body.Close()
+			}()
 
 			resp, err := deepseek.HandleChatCompletionResponse(tt.response)
 
@@ -220,7 +222,7 @@ type errorReader struct {
 	err error
 }
 
-func (r *errorReader) Read(p []byte) (int, error) {
+func (r *errorReader) Read(_ []byte) (int, error) {
 	return 0, r.err
 }
 
@@ -233,7 +235,9 @@ func TestResponseStructureValidation(t *testing.T) {
 				"choices": [{}]
 			}`))),
 		}
-		defer resp.Body.Close()
+		defer func() {
+			_ = resp.Body.Close()
+		}()
 
 		_, err := deepseek.HandleChatCompletionResponse(resp)
 		require.Error(t, err)
@@ -252,7 +256,9 @@ func TestResponseStructureValidation(t *testing.T) {
 				"usage": {"prompt_tokens": "ten"}
 			}`))),
 		}
-		defer resp.Body.Close()
+		defer func() {
+			_ = resp.Body.Close()
+		}()
 
 		_, err := deepseek.HandleChatCompletionResponse(resp)
 		require.Error(t, err)

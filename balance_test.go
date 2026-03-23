@@ -11,14 +11,12 @@ import (
 )
 
 func TestGetBalance(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client := deepseek.NewClient(config.APIKey)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
 
-	ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-	defer cancel()
+	client := testutil.NewMockClient(t, server)
 
-	balance, err := deepseek.GetBalance(client, ctx)
+	balance, err := deepseek.GetBalance(client, context.Background())
 	require.NoError(t, err, "should not return error")
 	require.NotNil(t, balance, "response should not be nil ")
 

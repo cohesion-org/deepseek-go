@@ -2,7 +2,6 @@ package deepseek_test
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"testing"
 
@@ -14,13 +13,9 @@ import (
 )
 
 func TestChatPrefixCompletion(t *testing.T) {
-	testutil.SkipIfShort(t)
-	config := testutil.LoadTestConfig(t)
-	client, _ := deepseek.NewClientWithOptions(config.APIKey,
-		deepseek.WithBaseURL("https://api.deepseek.com/beta/"),
-		deepseek.WithTimeoutString("5m"))
-
-	fmt.Println(client.Path)
+	server := testutil.NewMockDeepSeekServer(t)
+	defer server.Close()
+	client := testutil.NewMockBetaClient(t, server)
 
 	reasoningContent, err := os.ReadFile("utils/reasoningContent.txt")
 	require.NoError(t, err, "failed to read reasoning content file")
@@ -76,10 +71,7 @@ func TestChatPrefixCompletion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), config.TestTimeout)
-			defer cancel()
-
-			resp, err := client.CreateChatCompletion(ctx, tt.req)
+			resp, err := client.CreateChatCompletion(context.Background(), tt.req)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
