@@ -15,10 +15,10 @@ jobs:
         os: [ubuntu-latest]
         gov: ["1.24"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       - name: Set up Go ${{ matrix.gov }}
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.gov }}
           cache: true
