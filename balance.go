@@ -25,9 +25,10 @@ type BalanceResponse struct {
 
 // GetBalance sends a request to the API to get the user's balance.
 func GetBalance(c *Client, ctx context.Context) (*BalanceResponse, error) {
+	baseURL := resolveBaseURL(c.BaseURL, "https://api.deepseek.com/")
 
 	req, err := utils.NewRequestBuilder(c.AuthToken).
-		SetBaseURL("https://api.deepseek.com/").
+		SetBaseURL(baseURL).
 		SetPath("user/balance").
 		BuildGet(ctx)
 
@@ -40,7 +41,9 @@ func GetBalance(c *Client, ctx context.Context) (*BalanceResponse, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode >= 400 {
 		return nil, HandleAPIError(resp)

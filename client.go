@@ -17,15 +17,9 @@ func (c *Client) CreateChatCompletion(
 		return nil, fmt.Errorf("request cannot be nil")
 	}
 
-	//deepseek enable the thinking mode, but has some difference with qwen, you can use this feature to enable the thinking mode
-	//you can also set some extra values in it
-	if request.ExtraFields == nil {
-		request.ExtraFields = make(map[string]interface{})
-	}
-	if request.EnableThinking {
-		request.ExtraFields["chat_template_kwargs"] = map[string]map[string]string{
-			"thinking": {"type": "enabled"},
-		}
+	payload, err := normalizeChatCompletionPayload(request)
+	if err != nil {
+		return nil, fmt.Errorf("error normalizing request payload: %w", err)
 	}
 
 	ctx, tcancel, err := getTimeoutContext(ctx, c.Timeout)
@@ -37,7 +31,7 @@ func (c *Client) CreateChatCompletion(
 	req, err := utils.NewRequestBuilder(c.AuthToken).
 		SetBaseURL(c.BaseURL).
 		SetPath(c.Path).
-		SetBodyFromStruct(request).
+		SetBodyFromStruct(payload).
 		Build(ctx)
 
 	if err != nil {
@@ -48,7 +42,9 @@ func (c *Client) CreateChatCompletion(
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode >= 400 {
 		return nil, HandleAPIError(resp)
@@ -78,10 +74,14 @@ func (c *Client) CreateChatCompletionStream(
 	}
 
 	request.Stream = true
+	payload, err := normalizeStreamChatCompletionPayload(request)
+	if err != nil {
+		return nil, fmt.Errorf("error normalizing request payload: %w", err)
+	}
 	req, err := utils.NewRequestBuilder(c.AuthToken).
 		SetBaseURL(c.BaseURL).
 		SetPath(c.Path).
-		SetBodyFromStruct(request).
+		SetBodyFromStruct(payload).
 		BuildStream(ctx)
 
 	if err != nil {
@@ -116,7 +116,7 @@ func (c *Client) CreateFIMCompletion(
 	if request.MaxTokens > 4000 {
 		return nil, fmt.Errorf("max tokens must be <= 4000")
 	}
-	baseURL := "https://api.deepseek.com/beta/"
+	baseURL := resolveBetaBaseURL(c.BaseURL)
 
 	if request == nil {
 		return nil, fmt.Errorf("request cannot be nil")
@@ -133,7 +133,9 @@ func (c *Client) CreateFIMCompletion(
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 	if resp.StatusCode >= 400 {
 		return nil, HandleAPIError(resp)
 	}
@@ -149,7 +151,7 @@ func (c *Client) CreateFIMStreamCompletion(
 	ctx context.Context,
 	request *FIMStreamCompletionRequest,
 ) (FIMChatCompletionStream, error) {
-	baseURL := "https://api.deepseek.com/beta/"
+	baseURL := resolveBetaBaseURL(c.BaseURL)
 
 	request.Stream = true
 	req, err := utils.NewRequestBuilder(c.AuthToken).
