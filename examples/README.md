@@ -21,6 +21,7 @@ This directory contains various examples demonstrating different capabilities of
 | 14 | **[Reasoning Effort](14_reasoning_effort/reasoning_effort.go)** | Demonstrates `reasoning_effort` parameter ("high" vs "max") for V4 thinking mode. |
 | 15 | **[User ID Isolation](15_user_id/user_id.go)** | Multi-tenant isolation using the `user_id` parameter. |
 | 16 | **[Strict Tool Calling](16_strict_tools/strict_tools.go)** | Strict function calling (beta) with automatic `/beta` routing. |
+| 17 | **[Anthropic API](17_anthropic/anthropic.go)** | Anthropic-compatible endpoint with Claude model mapping, thinking, tool use, and streaming. |
 
 # Ollama
 Ollama docs are located [here](./ollama.md).
