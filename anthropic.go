@@ -28,12 +28,16 @@ type AnthropicThinkingBlock struct {
 	Signature string `json:"signature,omitempty"`
 }
 
+// AnthropicToolUseInput represents the typed input arguments for a tool_use block.
+// Use this when constructing tool_result responses with structured data.
+type AnthropicToolUseInput map[string]interface{}
+
 // AnthropicToolUseBlock represents a tool use content block from the model.
 type AnthropicToolUseBlock struct {
-	Type  string      `json:"type"`  // "tool_use"
-	ID    string      `json:"id"`    // Unique identifier for this tool use
-	Name  string      `json:"name"`  // The name of the tool being called
-	Input interface{} `json:"input"` // The input arguments for the tool
+	Type  string               `json:"type"`  // "tool_use"
+	ID    string               `json:"id"`    // Unique identifier for this tool use
+	Name  string               `json:"name"`  // The name of the tool being called
+	Input AnthropicToolUseInput `json:"input"` // The input arguments for the tool
 }
 
 // AnthropicToolResultBlock represents a tool result content block from the user.
