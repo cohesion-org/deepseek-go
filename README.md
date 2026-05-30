@@ -11,13 +11,20 @@ Deepseek-Go is a Go-based API client for the [Deepseek](https://deepseek.com) pl
 ```sh
 go get github.com/cohesion-org/deepseek-go
 ```
-deepseek-go currently uses `go 1.24.0`
+deepseek-go currently uses `go 1.26.0`
 
 ## Features
 
-- **Chat Completion**: Easily send chat messages and receive responses from Deepseek's AI models. It also supports streaming.
-- **Modular Design**: The library is structured into reusable components for building, sending, and handling requests and responses.
-- **External Providers**: Deepseek-go also supports external providers like OpenRouter, Azure, and even Ollama. 
+- **Chat Completion**: Send chat messages and receive responses from DeepSeek's V4 models with streaming support.
+- **Anthropic API**: Full Anthropic-compatible endpoint support via `NewAnthropicClient` with content blocks, tool use, and streaming.
+- **Thinking Mode**: Chain-of-thought reasoning with configurable `reasoning_effort` (`"high"` / `"max"`).
+- **Tool Calling**: Function calling with standard and strict mode (beta, with automatic `/beta` routing).
+- **FIM Completion**: Fill-in-the-Middle completions for code generation, with streaming.
+- **JSON Output**: Structured JSON output with schema extraction via `ResponseFormat`.
+- **External Providers**: OpenRouter, Azure, Ollama, and any OpenAI-compatible endpoint.
+- **Balance & Models**: Check account balance and list available models.
+- **Token Estimation**: Client-side token counting for Chinese and English text.
+- **Modular Design**: Reusable components for building, sending, and handling requests and responses.
 - **MIT License**: Open-source and free for both personal and commercial use.
 
 The recent gain in popularity and cybersecurity issues Deepseek has seen makes for many problems while using the API. Please refer to the [status](https://status.deepseek.com/) page for the current status.
@@ -34,23 +41,30 @@ Before using the library, ensure you have:
 
 ### Supported Models
 
-- **deepseek-chat**  
-  A versatile model designed for conversational tasks. <br/>
-  Usage: `Model: deepseek.DeepSeekChat`
+- **deepseek-v4-flash** (current)  
+  Flagship model with 1M context, 384K max output. Supports thinking mode, tool calls, JSON output, FIM, and prefix completion. <br/>
+  Usage: `Model: deepseek.DeepSeekV4Flash`
 
-- **deepseek-reasoner**  
-  A specialized model for reasoning-based tasks.  
-  Usage: `Model: deepseek.DeepSeekReasoner`. <br/>
-  **Note:** The [reasoner](https://api-docs.deepseek.com/guides/reasoning_model) requires unique conditions. Please refer to this issue [#8](https://github.com/cohesion-org/deepseek-go/issues/8). 
+- **deepseek-v4-pro** (current)  
+  Premium reasoning model with 1M context, 384K max output. Best for complex reasoning and agent tasks. <br/>
+  Usage: `Model: deepseek.DeepSeekV4Pro`
+
+- **deepseek-chat** (deprecated, sunset 2026/07/24)  
+  Maps to `deepseek-v4-flash` non-thinking mode. <br/>
+  Usage: `Model: deepseek.DeepSeekV4Flash` — emits a deprecation warning to stderr.
+
+- **deepseek-reasoner** (deprecated, sunset 2026/07/24)  
+  Maps to `deepseek-v4-flash` thinking mode. <br/>
+  Usage: `Model: deepseek.DeepSeekReasoner` — emits a deprecation warning to stderr. 
 
 ### External Providers
 - **Azure DeepSeekR1**  
-	Same as `deepseek-reasoner`, but provided by Azure. <br/>
+	DeepSeek R1 provided by Azure. <br/>
 	Usage: `Model: deepseek.AzureDeepSeekR1`
 
-- **OpenRouter DeepSeek1** <br/>
-	Same as `deepseek-reasoner`, but provided by OpenRouter. <br/>
-  	Usage: `Model: deepseek.OpenRouterR1`
+- **OpenRouter** <br/>
+	OpenRouter provides access to DeepSeek R1 and distill models. <br/>
+	Usage: `Model: deepseek.OpenRouterDeepSeekR1` (and other `OpenRouterDeepSeek*` constants)
 
 - **Ollama Support** <br/>
 	Please read [Ollama Support](#ollama) for more info about this!
@@ -82,7 +96,7 @@ func main() {
 
 	// Create a chat completion request
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Answer every question using slang."},
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
@@ -162,7 +176,7 @@ Note: If you wish to use other providers that are not supported by us, you can s
 
 ```go
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "What is the meaning of deepseek"},
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Answer every question using slang"},
@@ -201,7 +215,7 @@ func MultiChat() {
 
 	// Round 1: First API call
 	response1, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: messages,
 	})
 	if err != nil {
@@ -222,7 +236,7 @@ func MultiChat() {
 	})
 
 	response2, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: messages,
 	})
 	if err != nil {
@@ -262,7 +276,7 @@ import (
 func main() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 	request := &deepseek.StreamChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Just testing if the streaming feature is working or not!"},
 		},
@@ -355,7 +369,7 @@ This is adpated from [the  Deepseek's estimation](https://api-docs.deepseek.com/
 func Estimation() {
 	client := deepseek.NewClient("DEEPSEEK_API_KEY"))
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Just respond with the time it might take you to complete this request."},
 			{Role: deepseek.ChatMessageRoleUser, Content: "The text to evaluate the time is: Who is the greatest singer in the world?"},
@@ -515,7 +529,7 @@ import (
 func FIM() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 	request := &deepseek.FIMCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
+		Model:  deepseek.DeepSeekV4Flash,
 		Prompt: "def add(a, b):",
 	}
 	ctx := context.Background()
@@ -554,7 +568,7 @@ func ChatPrefix() {
 	ctx := context.Background()
 
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Please write quick sort code"},
 			{Role: deepseek.ChatMessageRoleAssistant, Content: "```python", Prefix: true},
@@ -621,6 +635,178 @@ For more advanced examples including streaming and base64 image support, see [Op
 </details>
 
 ---
+<details>
+<summary> Thinking Mode with reasoning_effort </summary>
+
+DeepSeek V4 models support chain-of-thought reasoning. Control the reasoning depth with `ReasoningEffort`:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+
+	deepseek "github.com/cohesion-org/deepseek-go"
+)
+
+func main() {
+	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
+
+	request := &deepseek.ChatCompletionRequest{
+		Model:           deepseek.DeepSeekV4Pro,
+		ReasoningEffort: "max", // "high" (default) or "max"
+		Messages: []deepseek.ChatCompletionMessage{
+			{Role: deepseek.ChatMessageRoleUser, Content: "Explain quantum entanglement."},
+		},
+	}
+
+	ctx := context.Background()
+	response, err := client.CreateChatCompletion(ctx, request)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	fmt.Println("Reasoning:", response.Choices[0].Message.ReasoningContent)
+	fmt.Println("Answer:", response.Choices[0].Message.Content)
+}
+```
+
+Note: When thinking mode is active, `temperature`, `top_p`, `presence_penalty`, and `frequency_penalty` are accepted but have no effect.
+
+</details>
+
+<details>
+<summary> Tool Calling with Strict Mode </summary>
+
+Standard function calling and beta strict mode (automatically routes to `/beta` when `Strict: true`):
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+
+	deepseek "github.com/cohesion-org/deepseek-go"
+)
+
+func main() {
+	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
+
+	getWeather := deepseek.Tool{
+		Type: "function",
+		Function: deepseek.Function{
+			Name:        "get_weather",
+			Description: "Get weather of a location",
+			Strict:      true, // triggers /beta endpoint routing
+			Parameters: &deepseek.FunctionParameters{
+				Type: "object",
+				Properties: map[string]interface{}{
+					"location": map[string]interface{}{
+						"type": "string",
+					},
+				},
+				Required: []string{"location"},
+			},
+		},
+	}
+
+	request := &deepseek.ChatCompletionRequest{
+		Model: deepseek.DeepSeekV4Flash,
+		Messages: []deepseek.ChatCompletionMessage{
+			{Role: deepseek.ChatMessageRoleUser, Content: "What's the weather in Tokyo?"},
+		},
+		Tools: []deepseek.Tool{getWeather},
+	}
+
+	response, err := client.CreateChatCompletion(context.Background(), request)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	fmt.Println("Tool calls:", response.Choices[0].Message.ToolCalls)
+}
+```
+
+</details>
+
+<details>
+<summary> Anthropic-Compatible API </summary>
+
+Use `NewAnthropicClient` to talk to DeepSeek's Anthropic-compatible endpoint. Claude model names are automatically mapped to DeepSeek models:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+
+	deepseek "github.com/cohesion-org/deepseek-go"
+)
+
+func main() {
+	client := deepseek.NewAnthropicClient(os.Getenv("DEEPSEEK_API_KEY"))
+
+	request := &deepseek.AnthropicRequest{
+		Model:     "claude-opus-4-7", // auto-mapped to deepseek-v4-pro
+		MaxTokens: 1024,
+		System:    "You are a helpful assistant.",
+		Messages: []deepseek.AnthropicMessage{
+			{
+				Role: "user",
+				Content: []interface{}{
+					deepseek.AnthropicTextBlock{Type: "text", Text: "Hello, how are you?"},
+				},
+			},
+		},
+	}
+
+	response, err := client.CreateAnthropicMessage(context.Background(), request)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	for _, block := range response.Content {
+		if text, ok := block.(deepseek.AnthropicTextBlock); ok {
+			fmt.Println(text.Text)
+		}
+	}
+}
+```
+
+See `examples/` for more Anthropic usage patterns including tool use and streaming.
+
+</details>
+
+<details>
+<summary> Multi-tenant isolation with user_id </summary>
+
+Use `UserID` to isolate content safety, KVCache, and scheduling per end-user:
+
+```go
+request := &deepseek.ChatCompletionRequest{
+	Model:  deepseek.DeepSeekV4Flash,
+	UserID: "user-42", // [a-zA-Z0-9-_]+, max 512 chars
+	Messages: []deepseek.ChatCompletionMessage{
+		{Role: deepseek.ChatMessageRoleUser, Content: "Hello!"},
+	},
+}
+```
+
+Do not include user privacy information (emails, names, PII) in `user_id`.
+
+</details>
+
+---
+
 ## Getting a Deepseek Key
 
 To use the Deepseek API, you need an API key. You can obtain one by signing up on the [Deepseek website](https://platform.deepseek.com/api_keys)

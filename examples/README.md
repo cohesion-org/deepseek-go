@@ -6,7 +6,7 @@ This directory contains various examples demonstrating different capabilities of
 |----|----------------------------------------------|-------------|
 | 0  | **[Using External Providers](00_external_providers/chat.go)** | Supports external providers through `baseURL` extension. Missing model constants can be reported via issues or pull requests. |
 | 1  | **[Basic Chat Example](01_chat/chat.go)**  | Demonstrates basic chat functionality. |
-| 2  | **[Chat with Streaming](02_chat_stream/chat_stream.go)** | Implements streaming chat responses, including `ReasoningContent` with R1. |
+| 2  | **[Chat with Streaming](02_chat_stream/chat_stream.go)** | Implements streaming chat responses, including `ReasoningContent` with V4 models. |
 | 3  | **[Fill-in-Middle (FIM)](03_fim/fim.go)** | Example of fill-in-middle completion with streaming support. |
 | 4  | **[JSON Mode](04_json_mode/json_mode.go)** | Demonstrates JSON mode for structured responses. This is a client-specific feature. |
 | 5  | **[Multi-Chat](05_multi_chat/multi_chat.go)** | Example of handling multiple concurrent chat sessions. |
@@ -18,6 +18,9 @@ This directory contains various examples demonstrating different capabilities of
 | 11 | **[List Supported Models](11_list_models/list_models.go)** | Shows how to list all supported models through the Deepseek API. |
 | 12 | **[Function Calling](12_function_calling/function_calling.go)** | Demonstrates function calling capabilities. |
 | 13 | **[OpenRouter Images](13_openrouter_images/openrouter_images.go)** | Example usage with OpenRouter images. |
+| 14 | **[Reasoning Effort](14_reasoning_effort/reasoning_effort.go)** | Demonstrates `reasoning_effort` parameter ("high" vs "max") for V4 thinking mode. |
+| 15 | **[User ID Isolation](15_user_id/user_id.go)** | Multi-tenant isolation using the `user_id` parameter. |
+| 16 | **[Strict Tool Calling](16_strict_tools/strict_tools.go)** | Strict function calling (beta) with automatic `/beta` routing. |
 
 # Ollama
 Ollama docs are located [here](./ollama.md).
