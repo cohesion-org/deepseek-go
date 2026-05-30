@@ -10,8 +10,12 @@ import (
 )
 
 // Anthropic demonstrates the Anthropic-compatible API using DeepSeek's endpoint
-// at https://api.deepseek.com/anthropic. Claude model names are automatically
-// mapped: claude-opus* -> deepseek-v4-pro, claude-haiku*/claude-sonnet* -> deepseek-v4-flash.
+// at https://api.deepseek.com/anthropic. Use DeepSeek model names directly
+// (deepseek-v4-pro, deepseek-v4-flash) as shown below.
+//
+// For Claude Code / Claude Desktop compatibility, pass Claude model names and they
+// are auto-mapped: claude-opus* -> deepseek-v4-pro, claude-haiku*/claude-sonnet* ->
+// deepseek-v4-flash. Unsupported model names also auto-map to deepseek-v4-flash.
 //
 // Features supported: text, thinking, tool_use, tool_result content blocks.
 // Not supported (by DeepSeek): images, documents, cache_control, MCP, code execution.
@@ -25,7 +29,7 @@ func Anthropic() {
 
 	// Non-streaming example with text + thinking
 	req := &deepseek.AnthropicRequest{
-		Model:     "claude-opus-4-7", // mapped to deepseek-v4-pro
+		Model:     deepseek.DeepSeekV4Pro,
 		MaxTokens: 256,
 		System:    "You are a helpful assistant. Answer concisely.",
 		Thinking: &deepseek.AnthropicThinkingConfig{
@@ -66,7 +70,7 @@ func Anthropic() {
 
 	// Streaming example
 	streamReq := &deepseek.AnthropicRequest{
-		Model:     "claude-sonnet-4-6", // mapped to deepseek-v4-flash
+		Model:     deepseek.DeepSeekV4Flash,
 		MaxTokens: 128,
 		Messages: []deepseek.AnthropicMessage{
 			{
