@@ -29,7 +29,7 @@ func TestChatPrefixCompletion(t *testing.T) {
 		{
 			name: "basic prefix completion",
 			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeepSeekChat,
+				Model: deepseek.DeepSeekV4Flash,
 				Messages: []deepseek.ChatCompletionMessage{
 					{Role: constants.ChatMessageRoleUser, Content: "Please write quick sort code"},
 					{Role: constants.ChatMessageRoleAssistant, Content: "```python\n", Prefix: true},
@@ -43,7 +43,7 @@ func TestChatPrefixCompletion(t *testing.T) {
 		{
 			name: "prefix with reasoner and reasoning_content",
 			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeepSeekReasoner,
+				Model: deepseek.DeepSeekV4Pro,
 				Messages: []deepseek.ChatCompletionMessage{
 					{Role: constants.ChatMessageRoleUser, Content: "Please write quick sort code"},
 					{Role: constants.ChatMessageRoleAssistant, Content: "```python\n", Prefix: true, ReasoningContent: string(reasoningContent)},
@@ -57,7 +57,7 @@ func TestChatPrefixCompletion(t *testing.T) {
 		{
 			name: "empty messages",
 			req: &deepseek.ChatCompletionRequest{
-				Model:    deepseek.DeepSeekChat,
+				Model:    deepseek.DeepSeekV4Flash,
 				Messages: []deepseek.ChatCompletionMessage{},
 			},
 			wantErr: true,

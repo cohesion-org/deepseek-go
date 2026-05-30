@@ -14,7 +14,7 @@ import (
 func FIMStream() {
 	client := deepseek.NewClient("DEEPSEEK_API_KEY")
 	request := &deepseek.FIMStreamCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
+		Model:  deepseek.DeepSeekV4Flash,
 		Prompt: "def add(a, b): ",
 		Stream: true,
 	}

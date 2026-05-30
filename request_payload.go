@@ -22,6 +22,8 @@ func normalizeChatCompletionPayload(request *ChatCompletionRequest) (map[string]
 		ToolChoice       interface{}             `json:"tool_choice,omitempty"`
 		LogProbs         bool                    `json:"logprobs,omitempty"`
 		TopLogProbs      int                     `json:"top_logprobs,omitempty"`
+		ReasoningEffort  string                  `json:"reasoning_effort,omitempty"`
+		UserID           string                  `json:"user_id,omitempty"`
 		JSONMode         bool                    `json:"json,omitempty"`
 		Thinking         *ThinkingConfig         `json:"thinking,omitempty"`
 	}{
@@ -38,6 +40,8 @@ func normalizeChatCompletionPayload(request *ChatCompletionRequest) (map[string]
 		ToolChoice:       request.ToolChoice,
 		LogProbs:         request.LogProbs,
 		TopLogProbs:      request.TopLogProbs,
+		ReasoningEffort:  request.ReasoningEffort,
+		UserID:           request.UserID,
 		JSONMode:         request.JSONMode,
 		Thinking:         request.Thinking,
 	}
@@ -59,8 +63,11 @@ func normalizeStreamChatCompletionPayload(request *StreamChatCompletionRequest) 
 		ResponseFormat   *ResponseFormat         `json:"response_format,omitempty"`
 		Stop             []string                `json:"stop,omitempty"`
 		Tools            []Tool                  `json:"tools,omitempty"`
+		ToolChoice       interface{}             `json:"tool_choice,omitempty"`
 		LogProbs         bool                    `json:"logprobs,omitempty"`
 		TopLogProbs      int                     `json:"top_logprobs,omitempty"`
+		ReasoningEffort  string                  `json:"reasoning_effort,omitempty"`
+		UserID           string                  `json:"user_id,omitempty"`
 		Thinking         *ThinkingConfig         `json:"thinking,omitempty"`
 	}{
 		Stream:           request.Stream,
@@ -75,8 +82,11 @@ func normalizeStreamChatCompletionPayload(request *StreamChatCompletionRequest) 
 		ResponseFormat:   request.ResponseFormat,
 		Stop:             request.Stop,
 		Tools:            request.Tools,
+		ToolChoice:       request.ToolChoice,
 		LogProbs:         request.LogProbs,
 		TopLogProbs:      request.TopLogProbs,
+		ReasoningEffort:  request.ReasoningEffort,
+		UserID:           request.UserID,
 		Thinking:         request.Thinking,
 	}
 

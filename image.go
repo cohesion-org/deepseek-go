@@ -51,6 +51,8 @@ type ChatCompletionRequestWithImage struct {
 	ToolChoice       interface{}                      `json:"tool_choice,omitempty"`       // Controls which (if any) tool is called by the model (optional).
 	LogProbs         bool                             `json:"logprobs,omitempty"`          // Whether to return log probabilities of the most likely tokens (optional).
 	TopLogProbs      int                              `json:"top_logprobs,omitempty"`      // The number of top most likely tokens to return log probabilities for (optional).
+	ReasoningEffort  string                           `json:"reasoning_effort,omitempty"`
+	UserID           string                           `json:"user_id,omitempty"`
 	JSONMode         bool                             `json:"json,omitempty"`              // [deepseek-go feature] Optional: Enable JSON mode. If you're using the JSON mode, please mention "json" anywhere in your prompt, and also include the JSON schema in the request.
 }
 
@@ -70,6 +72,8 @@ type StreamChatCompletionRequestWithImage struct {
 	Tools            []Tool                           `json:"tools,omitempty"`             // Optional: List of tools
 	LogProbs         bool                             `json:"logprobs,omitempty"`          // Optional: Enable log probabilities
 	TopLogProbs      int                              `json:"top_logprobs,omitempty"`      // Optional: Number of top tokens with log probabilities, <= 20
+	ReasoningEffort  string                           `json:"reasoning_effort,omitempty"`
+	UserID           string                           `json:"user_id,omitempty"`
 }
 
 // CreateChatCompletionWithImage sends a chat completion request with image content and returns the response.

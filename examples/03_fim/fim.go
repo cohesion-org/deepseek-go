@@ -13,7 +13,7 @@ import (
 func FIM() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 	request := &deepseek.FIMCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
+		Model:  deepseek.DeepSeekV4Flash,
 		Prompt: "def add(a, b):",
 	}
 	ctx := context.Background()

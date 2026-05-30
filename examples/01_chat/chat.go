@@ -12,7 +12,7 @@ import (
 func Chat() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
 			{Role: deepseek.ChatMessageRoleSystem, Content: "Answer every question using slang"},

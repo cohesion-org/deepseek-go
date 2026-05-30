@@ -6,8 +6,8 @@
 //   - Chat Completion: Send chat messages and receive responses from Deepseek's AI models with support for both
 //     regular and streaming responses.
 //
-//   - Model Support: Access to official Deepseek models (DeepSeekChat, DeepSeekCoder, DeepSeekReasoner) and
-//     external providers like OpenRouter, Azure, and Ollama.
+//   - Model Support: Access to official Deepseek models (DeepSeekV4Flash, DeepSeekV4Pro, DeepSeekChat,
+//     DeepSeekCoder, DeepSeekReasoner) and external providers like OpenRouter, Azure, and Ollama.
 //
 //   - Advanced Features: Support for Fill-In-the-Middle (FIM) completions, JSON mode for structured outputs,
 //     function calling, and image processing capabilities.
@@ -26,7 +26,7 @@
 //
 //	client := deepseek.NewClient("YOUR_API_KEY")
 //	request := &deepseek.ChatCompletionRequest{
-//		Model: deepseek.DeepSeekChat,
+//		Model: deepseek.DeepSeekV4Flash,
 //		Messages: []deepseek.ChatCompletionMessage{
 //			{Role: deepseek.ChatMessageRoleUser, Content: "Hello, how are you?"},
 //		},

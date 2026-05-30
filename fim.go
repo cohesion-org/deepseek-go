@@ -16,14 +16,14 @@ type FIMCompletionRequest struct {
 	Prompt           string   `json:"prompt"`                      // The prompt to start the completion from.
 	Suffix           string   `json:"suffix,omitempty"`            // Optional: The suffix to complete the prompt with.
 	MaxTokens        int      `json:"max_tokens,omitempty"`        // Optional: Maximum tokens to generate, > 1 and <= 4000.
-	Temperature      float64  `json:"temperature,omitempty"`       // Optional: Sampling temperature, between 0 and 1.
-	TopP             float64  `json:"top_p,omitempty"`             // Optional: Nucleus sampling probability threshold.
+	Temperature      float32  `json:"temperature,omitempty"`       // Optional: Sampling temperature, between 0 and 1.
+	TopP             float32  `json:"top_p,omitempty"`             // Optional: Nucleus sampling probability threshold.
 	N                int      `json:"n,omitempty"`                 // Optional: Number of completions to generate.
 	Logprobs         int      `json:"logprobs,omitempty"`          // Optional: Number of log probabilities to return.
 	Echo             bool     `json:"echo,omitempty"`              // Optional: Whether to echo the prompt in the completion.
 	Stop             []string `json:"stop,omitempty"`              // Optional: List of stop sequences.
-	PresencePenalty  float64  `json:"presence_penalty,omitempty"`  // Optional: Penalty for new tokens based on their presence in the text so far.
-	FrequencyPenalty float64  `json:"frequency_penalty,omitempty"` // Optional: Penalty for new tokens based on their frequency in the text so far.
+	PresencePenalty  float32  `json:"presence_penalty,omitempty"`  // Optional: Penalty for new tokens based on their presence in the text so far.
+	FrequencyPenalty float32  `json:"frequency_penalty,omitempty"` // Optional: Penalty for new tokens based on their frequency in the text so far.
 }
 
 // FIMCompletionResponse represents the response body for a Fill-In-the-Middle (FIM) completion.
@@ -54,14 +54,14 @@ type FIMStreamCompletionRequest struct {
 	StreamOptions    StreamOptions `json:"stream_options,omitempty"`    // Optional: Options for streaming the completion.
 	Suffix           string        `json:"suffix,omitempty"`            // Optional: The suffix to complete the prompt with.
 	MaxTokens        int           `json:"max_tokens,omitempty"`        // Optional: Maximum tokens to generate, > 1 and <= 4000.
-	Temperature      float64       `json:"temperature,omitempty"`       // Optional: Sampling temperature, between 0 and 1.
-	TopP             float64       `json:"top_p,omitempty"`             // Optional: Nucleus sampling probability threshold.
+	Temperature      float32       `json:"temperature,omitempty"`       // Optional: Sampling temperature, between 0 and 1.
+	TopP             float32       `json:"top_p,omitempty"`             // Optional: Nucleus sampling probability threshold.
 	N                int           `json:"n,omitempty"`                 // Optional: Number of completions to generate.
 	Logprobs         int           `json:"logprobs,omitempty"`          // Optional: Number of log probabilities to return.
 	Echo             bool          `json:"echo,omitempty"`              // Optional: Whether to echo the prompt in the completion.
 	Stop             []string      `json:"stop,omitempty"`              // Optional: List of stop sequences.
-	PresencePenalty  float64       `json:"presence_penalty,omitempty"`  // Optional: Penalty for new tokens based on their presence in the text so far.
-	FrequencyPenalty float64       `json:"frequency_penalty,omitempty"` // Optional: Penalty for new tokens based on their frequency in the text so far.
+	PresencePenalty  float32       `json:"presence_penalty,omitempty"`  // Optional: Penalty for new tokens based on their presence in the text so far.
+	FrequencyPenalty float32       `json:"frequency_penalty,omitempty"` // Optional: Penalty for new tokens based on their frequency in the text so far.
 }
 
 // FIMStreamChoice represents a single choice within a streaming Fill-In-the-Middle (FIM) completion response.

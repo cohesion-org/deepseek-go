@@ -21,7 +21,7 @@ func BadMultiChat() {
 	}}
 
 	response1, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: messages,
 	})
 	if err != nil {
@@ -41,7 +41,7 @@ func BadMultiChat() {
 	})
 
 	response2, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: messages,
 	})
 	if err != nil {

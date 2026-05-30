@@ -13,7 +13,7 @@ import (
 func EstimateTokens() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "The text to evaluate the time is: Who is the greatest singer in the world?"},
 		},

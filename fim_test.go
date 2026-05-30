@@ -25,7 +25,7 @@ func TestCreateFIMCompletion(t *testing.T) {
 		{
 			name: "basic FIM completion",
 			req: &deepseek.FIMCompletionRequest{
-				Model:  deepseek.DeepSeekChat,
+				Model:  deepseek.DeepSeekV4Flash,
 				Prompt: "func main() {\n    fmt.Println(\"hel",
 			},
 			wantErr: false,
@@ -36,7 +36,7 @@ func TestCreateFIMCompletion(t *testing.T) {
 		{
 			name: "empty prompt",
 			req: &deepseek.FIMCompletionRequest{
-				Model:  deepseek.DeepSeekChat,
+				Model:  deepseek.DeepSeekV4Flash,
 				Prompt: "",
 			},
 			wantErr: true,
@@ -52,7 +52,7 @@ func TestCreateFIMCompletion(t *testing.T) {
 		{
 			name: "max tokens exceeded",
 			req: &deepseek.FIMCompletionRequest{
-				Model:     deepseek.DeepSeekChat,
+				Model:     deepseek.DeepSeekV4Flash,
 				Prompt:    "long prompt " + strings.Repeat("test ", 1000),
 				MaxTokens: 5000,
 			},
@@ -103,7 +103,7 @@ func TestCreateFIMCompletionWithParameters(t *testing.T) {
 		{
 			name: "FIM completion with temperature and top_p",
 			req: &deepseek.FIMCompletionRequest{
-				Model:       deepseek.DeepSeekChat,
+				Model:       deepseek.DeepSeekV4Flash,
 				Prompt:      "func main() {\n    fmt.Println(\"hel",
 				Temperature: 0.5,
 				TopP:        0.9,
@@ -116,7 +116,7 @@ func TestCreateFIMCompletionWithParameters(t *testing.T) {
 		{
 			name: "FIM completion with invalid temperature",
 			req: &deepseek.FIMCompletionRequest{
-				Model:       deepseek.DeepSeekChat,
+				Model:       deepseek.DeepSeekV4Flash,
 				Prompt:      "func main() {\n    fmt.Println(\"hel",
 				Temperature: 2.5, // Invalid temperature
 			},
@@ -159,7 +159,7 @@ func TestFIMCompletionResponseStructure(t *testing.T) {
 	client := testutil.NewMockBetaClient(t, server)
 
 	req := &deepseek.FIMCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
+		Model:  deepseek.DeepSeekV4Flash,
 		Prompt: "func main() {\n    fmt.Println(\"hel",
 	}
 
@@ -199,7 +199,7 @@ func TestFIMCompletionResponseStructure(t *testing.T) {
 // 	client := deepseek.NewClient(config.APIKey)
 
 // 	req := &deepseek.FIMCompletionRequest{
-// 		Model:    deepseek.DeepSeekChat,
+// 		Model:    deepseek.DeepSeekV4Flash,
 // 		Prompt:   "func main() {\n    fmt.Println(\"hel",
 // 		Logprobs: 10, // Request log probabilities
 // 	}

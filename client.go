@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"os"
 
 	utils "github.com/cohesion-org/deepseek-go/utils"
 )
@@ -17,6 +18,8 @@ func (c *Client) CreateChatCompletion(
 		return nil, fmt.Errorf("request cannot be nil")
 	}
 
+	warnDeprecatedModel(request.Model)
+
 	payload, err := normalizeChatCompletionPayload(request)
 	if err != nil {
 		return nil, fmt.Errorf("error normalizing request payload: %w", err)
@@ -28,8 +31,13 @@ func (c *Client) CreateChatCompletion(
 	}
 	defer tcancel()
 
+	baseURL := c.BaseURL
+	if hasStrictTool(request.Tools) {
+		baseURL = resolveBetaBaseURL(c.BaseURL)
+	}
+
 	req, err := utils.NewRequestBuilder(c.AuthToken).
-		SetBaseURL(c.BaseURL).
+		SetBaseURL(baseURL).
 		SetPath(c.Path).
 		SetBodyFromStruct(payload).
 		Build(ctx)
@@ -68,6 +76,8 @@ func (c *Client) CreateChatCompletionStream(
 		return nil, fmt.Errorf("request cannot be nil")
 	}
 
+	warnDeprecatedModel(request.Model)
+
 	ctx, _, err := getTimeoutContext(ctx, c.Timeout)
 	if err != nil {
 		return nil, fmt.Errorf("error getting timeout context: %w", err)
@@ -78,8 +88,14 @@ func (c *Client) CreateChatCompletionStream(
 	if err != nil {
 		return nil, fmt.Errorf("error normalizing request payload: %w", err)
 	}
+
+	baseURL := c.BaseURL
+	if hasStrictTool(request.Tools) {
+		baseURL = resolveBetaBaseURL(c.BaseURL)
+	}
+
 	req, err := utils.NewRequestBuilder(c.AuthToken).
-		SetBaseURL(c.BaseURL).
+		SetBaseURL(baseURL).
 		SetPath(c.Path).
 		SetBodyFromStruct(payload).
 		BuildStream(ctx)
@@ -121,6 +137,8 @@ func (c *Client) CreateFIMCompletion(
 	if request == nil {
 		return nil, fmt.Errorf("request cannot be nil")
 	}
+
+	warnDeprecatedModel(request.Model)
 	req, err := utils.NewRequestBuilder(c.AuthToken).
 		SetBaseURL(baseURL).
 		SetPath("/completions").
@@ -153,6 +171,8 @@ func (c *Client) CreateFIMStreamCompletion(
 ) (FIMChatCompletionStream, error) {
 	baseURL := resolveBetaBaseURL(c.BaseURL)
 
+	warnDeprecatedModel(request.Model)
+
 	request.Stream = true
 	req, err := utils.NewRequestBuilder(c.AuthToken).
 		SetBaseURL(baseURL).
@@ -181,4 +201,26 @@ func (c *Client) CreateFIMStreamCompletion(
 		reader: bufio.NewReader(resp.Body),
 	}
 	return stream, nil
+}
+
+
+var deprecatedModels = map[string]string{
+	"deepseek-chat":     "deepseek-v4-flash (non-thinking mode)",
+	"deepseek-coder":    "deepseek-v4-flash",
+	"deepseek-reasoner": "deepseek-v4-flash (thinking mode)",
+}
+
+func warnDeprecatedModel(model string) {
+	if replacement, ok := deprecatedModels[model]; ok {
+		fmt.Fprintf(os.Stderr, "deepseek-go: WARNING model %q is deprecated and will be removed 2026/07/24. Use %s instead.\n", model, replacement)
+	}
+}
+
+func hasStrictTool(tools []Tool) bool {
+	for _, t := range tools {
+		if t.Function.Strict {
+			return true
+		}
+	}
+	return false
 }

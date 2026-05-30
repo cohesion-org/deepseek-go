@@ -90,11 +90,12 @@ type TopLogprobToken struct {
 
 // Usage represents token usage statistics.
 type Usage struct {
-	PromptTokens          int `json:"prompt_tokens"`            // Number of tokens used in the prompt.
-	CompletionTokens      int `json:"completion_tokens"`        // Number of tokens used in the completion.
-	TotalTokens           int `json:"total_tokens"`             // Total number of tokens used.
-	PromptCacheHitTokens  int `json:"prompt_cache_hit_tokens"`  // Number of tokens served from cache.
-	PromptCacheMissTokens int `json:"prompt_cache_miss_tokens"` // Number of tokens not served from cache.
+	PromptTokens            int                     `json:"prompt_tokens"`                      // Number of tokens used in the prompt.
+	CompletionTokens        int                     `json:"completion_tokens"`                  // Number of tokens used in the completion.
+	TotalTokens             int                     `json:"total_tokens"`                       // Total number of tokens used.
+	PromptCacheHitTokens    int                     `json:"prompt_cache_hit_tokens"`            // Number of tokens served from cache.
+	PromptCacheMissTokens   int                     `json:"prompt_cache_miss_tokens"`           // Number of tokens not served from cache.
+	CompletionTokensDetails CompletionTokensDetails `json:"completion_tokens_details,omitempty"` // Token counts broken down by completion subtype.
 }
 
 // HandleChatCompletionResponse parses the response from the chat completion endpoint.

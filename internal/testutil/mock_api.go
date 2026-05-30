@@ -33,6 +33,8 @@ func NewMockDeepSeekServer(t *testing.T) *MockDeepSeekServer {
 					{"id": deepseek.DeepSeekChat, "object": "model", "owned_by": "deepseek"},
 					{"id": deepseek.DeepSeekReasoner, "object": "model", "owned_by": "deepseek"},
 					{"id": deepseek.DeepSeekCoder, "object": "model", "owned_by": "deepseek"},
+					{"id": deepseek.DeepSeekV4Flash, "object": "model", "owned_by": "deepseek"},
+					{"id": deepseek.DeepSeekV4Pro, "object": "model", "owned_by": "deepseek"},
 				},
 			})
 		case "/user/balance":
@@ -133,7 +135,9 @@ type mockChatRequest struct {
 	Messages []mockChatMessage `json:"messages"`
 	Stream   bool              `json:"stream,omitempty"`
 	Tools    []deepseek.Tool   `json:"tools,omitempty"`
-	Thinking map[string]any    `json:"thinking,omitempty"`
+	Thinking        map[string]any `json:"thinking,omitempty"`
+	ReasoningEffort string         `json:"reasoning_effort,omitempty"`
+	UserID          string         `json:"user_id,omitempty"`
 }
 
 type mockChatMessage struct {
@@ -296,14 +300,19 @@ func writeMockChatStream(t *testing.T, w http.ResponseWriter, req mockChatReques
 
 func buildMockChatResult(req mockChatRequest) (content string, reasoning string, toolCalls []deepseek.ToolCall) {
 	lastUser := lastMessageContent(req.Messages, deepseek.ChatMessageRoleUser)
-	thinkingMode := req.Model == deepseek.DeepSeekReasoner || req.Thinking != nil
+	thinkingMode := req.Model == deepseek.DeepSeekReasoner || req.Model == deepseek.DeepSeekV4Pro || req.Thinking != nil || req.ReasoningEffort != ""
+	deepThinking := req.ReasoningEffort == "max"
 	hasToolMessage := hasRole(req.Messages, deepseek.ChatMessageRoleTool)
 	hasPrefix := hasPrefixMessage(req.Messages)
 
 	switch {
 	case len(req.Tools) > 0 && !hasToolMessage:
 		if thinkingMode {
-			reasoning = "I should inspect the request and call the appropriate tool first."
+			if deepThinking {
+				reasoning = "I should carefully analyze the user's request and determine the optimal tool to call. Let me inspect the available tools and their schemas to ensure I call the right one with the correct arguments."
+			} else {
+				reasoning = "I should inspect the request and call the appropriate tool first."
+			}
 		}
 		name := req.Tools[0].Function.Name
 		args := `{"location":"Paris","date":"2026-03-24"}`
@@ -341,6 +350,8 @@ func buildMockChatResult(req mockChatRequest) (content string, reasoning string,
 		return "PreviousPresident", reasoning, nil
 	case strings.Contains(strings.ToLower(lastUser), "joke"):
 		return "AI told a joke about tensors and it still landed.", reasoning, nil
+	case thinkingMode && deepThinking:
+		return "Human oversight should remain in place for final diagnostic decisions.", "Let me analyze this step by step. First, the core concern is about maintaining human judgment in high-stakes scenarios. Second, AI systems can make errors that humans would catch. Third, regulatory frameworks increasingly require human review. Therefore, oversight should be preserved as a safeguard.", nil
 	case thinkingMode:
 		return "Human oversight should remain in place for final diagnostic decisions.", "The stakes are high, so oversight helps catch errors and edge cases.", nil
 	default:

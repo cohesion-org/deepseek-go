@@ -34,7 +34,7 @@ func TestCreateChatCompletion_EnableThinkingUsesTopLevelThinking(t *testing.T) {
 	require.NoError(t, err)
 
 	resp, err := client.CreateChatCompletion(context.Background(), &deepseek.ChatCompletionRequest{
-		Model:          deepseek.DeepSeekChat,
+		Model:          deepseek.DeepSeekV4Flash,
 		EnableThinking: true,
 		ExtraFields: map[string]interface{}{
 			"foo": "bar",
@@ -78,7 +78,7 @@ func TestCreateChatCompletionStream_EnableThinkingUsesTopLevelThinking(t *testin
 	require.NoError(t, err)
 
 	stream, err := client.CreateChatCompletionStream(context.Background(), &deepseek.StreamChatCompletionRequest{
-		Model:          deepseek.DeepSeekChat,
+		Model:          deepseek.DeepSeekV4Flash,
 		EnableThinking: true,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "hello"},
@@ -164,7 +164,7 @@ func TestCreateChatCompletion_ToolContinuationPreservesReasoningContent(t *testi
 	require.NoError(t, err)
 
 	_, err = client.CreateChatCompletion(context.Background(), &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Thinking: &deepseek.ThinkingConfig{Type: "enabled"},
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "what time is it?"},
