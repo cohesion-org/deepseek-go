@@ -63,6 +63,7 @@ func normalizeStreamChatCompletionPayload(request *StreamChatCompletionRequest) 
 		ResponseFormat   *ResponseFormat         `json:"response_format,omitempty"`
 		Stop             []string                `json:"stop,omitempty"`
 		Tools            []Tool                  `json:"tools,omitempty"`
+		ToolChoice       interface{}             `json:"tool_choice,omitempty"`
 		LogProbs         bool                    `json:"logprobs,omitempty"`
 		TopLogProbs      int                     `json:"top_logprobs,omitempty"`
 		ReasoningEffort  string                  `json:"reasoning_effort,omitempty"`
@@ -81,6 +82,7 @@ func normalizeStreamChatCompletionPayload(request *StreamChatCompletionRequest) 
 		ResponseFormat:   request.ResponseFormat,
 		Stop:             request.Stop,
 		Tools:            request.Tools,
+		ToolChoice:       request.ToolChoice,
 		LogProbs:         request.LogProbs,
 		TopLogProbs:      request.TopLogProbs,
 		ReasoningEffort:  request.ReasoningEffort,

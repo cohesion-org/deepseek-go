@@ -67,9 +67,17 @@ type ToolChoiceFunction struct {
 	Name string `json:"name"` // The name of the function to call (required).
 }
 
+// JSONSchemaConfig defines the configuration for structured JSON output.
+type JSONSchemaConfig struct {
+	Name   string      `json:"name"`             // The name of the response schema.
+	Strict bool        `json:"strict,omitempty"` // Whether to enforce strict schema adherence.
+	Schema interface{} `json:"schema,omitempty"` // The JSON schema object describing the response format.
+}
+
 // ResponseFormat defines the structure for the response format.
 type ResponseFormat struct {
-	Type string `json:"type"` // The desired response format, either "text" or "json_object".
+	Type       string            `json:"type"`                 // The desired response format, either "text", "json_object", or "json_schema".
+	JSONSchema *JSONSchemaConfig `json:"json_schema,omitempty"` // Configuration for structured JSON output (when type is "json_schema").
 }
 
 // ChatCompletionRequest defines the structure for a chat completion request.

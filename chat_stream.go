@@ -110,6 +110,7 @@ type StreamChatCompletionRequest struct {
 	ResponseFormat   *ResponseFormat         `json:"response_format,omitempty"`   // Optional: Custom response format: just don't try, it breaks rn ;)
 	Stop             []string                `json:"stop,omitempty"`              // Optional: Stop signals
 	Tools            []Tool                  `json:"tools,omitempty"`             // Optional: List of tools
+	ToolChoice       interface{}             `json:"tool_choice,omitempty"`       // Optional: Controls which (if any) tool is called by the model.
 	LogProbs         bool                    `json:"logprobs,omitempty"`          // Optional: Enable log probabilities
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // Optional: Number of top tokens with log probabilities, <= 20
 	Thinking         *ThinkingConfig         `json:"thinking,omitempty"`          // Optional: Official DeepSeek thinking configuration.
