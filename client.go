@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"os"
 
 	utils "github.com/cohesion-org/deepseek-go/utils"
 )
@@ -16,6 +17,8 @@ func (c *Client) CreateChatCompletion(
 	if request == nil {
 		return nil, fmt.Errorf("request cannot be nil")
 	}
+
+	warnDeprecatedModel(request.Model)
 
 	payload, err := normalizeChatCompletionPayload(request)
 	if err != nil {
@@ -72,6 +75,8 @@ func (c *Client) CreateChatCompletionStream(
 	if request == nil {
 		return nil, fmt.Errorf("request cannot be nil")
 	}
+
+	warnDeprecatedModel(request.Model)
 
 	ctx, _, err := getTimeoutContext(ctx, c.Timeout)
 	if err != nil {
@@ -132,6 +137,8 @@ func (c *Client) CreateFIMCompletion(
 	if request == nil {
 		return nil, fmt.Errorf("request cannot be nil")
 	}
+
+	warnDeprecatedModel(request.Model)
 	req, err := utils.NewRequestBuilder(c.AuthToken).
 		SetBaseURL(baseURL).
 		SetPath("/completions").
@@ -164,6 +171,8 @@ func (c *Client) CreateFIMStreamCompletion(
 ) (FIMChatCompletionStream, error) {
 	baseURL := resolveBetaBaseURL(c.BaseURL)
 
+	warnDeprecatedModel(request.Model)
+
 	request.Stream = true
 	req, err := utils.NewRequestBuilder(c.AuthToken).
 		SetBaseURL(baseURL).
@@ -194,6 +203,18 @@ func (c *Client) CreateFIMStreamCompletion(
 	return stream, nil
 }
 
+
+var deprecatedModels = map[string]string{
+	"deepseek-chat":     "deepseek-v4-flash (non-thinking mode)",
+	"deepseek-coder":    "deepseek-v4-flash",
+	"deepseek-reasoner": "deepseek-v4-flash (thinking mode)",
+}
+
+func warnDeprecatedModel(model string) {
+	if replacement, ok := deprecatedModels[model]; ok {
+		fmt.Fprintf(os.Stderr, "deepseek-go: WARNING model %q is deprecated and will be removed 2026/07/24. Use %s instead.\n", model, replacement)
+	}
+}
 
 func hasStrictTool(tools []Tool) bool {
 	for _, t := range tools {
