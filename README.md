@@ -43,25 +43,16 @@ For API status and uptime, refer to the [DeepSeek Status](https://status.deepsee
 
 ## Contents
 
+- [Installation](#installation)
+- [Features](#features)
 - [Getting Started](#getting-started)
-- [Supported Models](#supported-models)
+  - [Supported Models](#supported-models)
+  - [External Providers](#external-providers)
 - [Examples](#more-examples)
-  - [Chat](#chat)
-  - [Streaming](#chat-with-streaming)
-  - [Thinking Mode](#thinking-mode-with-reasoning_effort)
-  - [Tool Calling](#tool-calling-with-strict-mode)
-  - [Anthropic API](#anthropic-compatible-api)
-  - [JSON Output](#json-mode-for-json-extraction)
-  - [FIM Completion](#fim-mode-beta)
-  - [Prefix Completion](#chat-prefix-completion-beta)
-  - [Image Support](#using-external-providers-with-image-support-openrouter)
-  - [External Providers](#using-external-providers-such-as-azure-or-openrouter)
-  - [Multi-turn Chat](#multi-conversation-with-deepseek)
-  - [Balance](#get-the-balances-of-the-user)
-  - [Token Estimation](#get-the-estimated-tokens-for-the-request)
-  - [Client Options](#add-more-settings-to-your-client-with-newclientwithoptions)
+- [Getting a DeepSeek Key](#getting-a-deepseek-key)
 - [Ollama Support](#ollama)
 - [Running Tests](#running-tests)
+- [Who Uses deepseek-go](#who-uses-deepseek-go)
 - [License](#license)
 
 ## Getting Started
