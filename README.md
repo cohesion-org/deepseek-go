@@ -1,11 +1,17 @@
 # Deepseek-Go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/cohesion-org/deepseek-go.svg)](https://pkg.go.dev/github.com/cohesion-org/deepseek-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/cohesion-org/deepseek-go)](https://goreportcard.com/report/github.com/cohesion-org/deepseek-go)
-[![CI](https://github.com/cohesion-org/deepseek-go/actions/workflows/test.yml/badge.svg)](https://github.com/cohesion-org/deepseek-go/actions/workflows/test.yml)
-[![Release](https://img.shields.io/github/v/release/cohesion-org/deepseek-go)](https://github.com/cohesion-org/deepseek-go/releases)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/cohesion-org/deepseek-go)](https://github.com/cohesion-org/deepseek-go)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <img src="internal/images/deepseek-go-big.png" alt="deepseek-go" width="400">
+</p>
+
+<p align="center">
+  <a href="https://pkg.go.dev/github.com/cohesion-org/deepseek-go"><img src="https://pkg.go.dev/badge/github.com/cohesion-org/deepseek-go.svg" alt="Go Reference"></a>
+  <a href="https://goreportcard.com/report/github.com/cohesion-org/deepseek-go"><img src="https://goreportcard.com/badge/github.com/cohesion-org/deepseek-go" alt="Go Report Card"></a>
+  <a href="https://github.com/cohesion-org/deepseek-go/actions/workflows/test.yml"><img src="https://github.com/cohesion-org/deepseek-go/actions/workflows/test.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/cohesion-org/deepseek-go/releases"><img src="https://img.shields.io/github/v/release/cohesion-org/deepseek-go" alt="Release"></a>
+  <a href="https://github.com/cohesion-org/deepseek-go"><img src="https://img.shields.io/github/go-mod/go-version/cohesion-org/deepseek-go" alt="Go Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
 
 Deepseek-Go is a Go-based API client for the [Deepseek](https://deepseek.com) platform. It provides a clean and type-safe interface to interact with Deepseek's AI features, including chat completions with streaming, token usage tracking, and more.
 
