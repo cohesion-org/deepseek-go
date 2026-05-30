@@ -67,7 +67,7 @@ type StreamChatCompletionRequestWithImage struct {
 	PresencePenalty  float32                          `json:"presence_penalty,omitempty"`  // Optional: Presence penalty, >= -2 and <= 2
 	Temperature      float32                          `json:"temperature,omitempty"`       // Optional: Sampling temperature, <= 2
 	TopP             float32                          `json:"top_p,omitempty"`             // Optional: Nucleus sampling parameter, <= 1
-	ResponseFormat   *ResponseFormat                  `json:"response_format,omitempty"`   // Optional: Custom response format: just don't try, it breaks rn ;)
+	ResponseFormat   *ResponseFormat                  `json:"response_format,omitempty"`   // Optional: Custom response format.
 	Stop             []string                         `json:"stop,omitempty"`              // Optional: Stop signals
 	Tools            []Tool                           `json:"tools,omitempty"`             // Optional: List of tools
 	LogProbs         bool                             `json:"logprobs,omitempty"`          // Optional: Enable log probabilities

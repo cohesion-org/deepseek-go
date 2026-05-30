@@ -1,12 +1,18 @@
 # Deepseek-Go
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) 
+[![Go Reference](https://pkg.go.dev/badge/github.com/cohesion-org/deepseek-go.svg)](https://pkg.go.dev/github.com/cohesion-org/deepseek-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cohesion-org/deepseek-go)](https://goreportcard.com/report/github.com/cohesion-org/deepseek-go)
+[![CI](https://github.com/cohesion-org/deepseek-go/actions/workflows/test.yml/badge.svg)](https://github.com/cohesion-org/deepseek-go/actions/workflows/test.yml)
+[![Release](https://img.shields.io/github/v/release/cohesion-org/deepseek-go)](https://github.com/cohesion-org/deepseek-go/releases)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/cohesion-org/deepseek-go)](https://github.com/cohesion-org/deepseek-go)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Deepseek-Go is a Go-based API client for the [Deepseek](https://deepseek.com) platform. It provides a clean and type-safe interface to interact with Deepseek's AI features, including chat completions with streaming, token usage tracking, and more.
 
 
 ## Installation
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/cohesion-org/deepseek-go.svg)](https://pkg.go.dev/github.com/cohesion-org/deepseek-go)
 
 ```sh
 go get github.com/cohesion-org/deepseek-go
@@ -27,7 +33,30 @@ deepseek-go currently uses `go 1.26.0`
 - **Modular Design**: Reusable components for building, sending, and handling requests and responses.
 - **MIT License**: Open-source and free for both personal and commercial use.
 
-The recent gain in popularity and cybersecurity issues Deepseek has seen makes for many problems while using the API. Please refer to the [status](https://status.deepseek.com/) page for the current status.
+For API status and uptime, refer to the [DeepSeek Status](https://status.deepseek.com/) page.
+
+## Contents
+
+- [Getting Started](#getting-started)
+- [Supported Models](#supported-models)
+- [Examples](#more-examples)
+  - [Chat](#chat)
+  - [Streaming](#chat-with-streaming)
+  - [Thinking Mode](#thinking-mode-with-reasoning_effort)
+  - [Tool Calling](#tool-calling-with-strict-mode)
+  - [Anthropic API](#anthropic-compatible-api)
+  - [JSON Output](#json-mode-for-json-extraction)
+  - [FIM Completion](#fim-mode-beta)
+  - [Prefix Completion](#chat-prefix-completion-beta)
+  - [Image Support](#using-external-providers-with-image-support-openrouter)
+  - [External Providers](#using-external-providers-such-as-azure-or-openrouter)
+  - [Multi-turn Chat](#multi-conversation-with-deepseek)
+  - [Balance](#get-the-balances-of-the-user)
+  - [Token Estimation](#get-the-estimated-tokens-for-the-request)
+  - [Client Options](#add-more-settings-to-your-client-with-newclientwithoptions)
+- [Ollama Support](#ollama)
+- [Running Tests](#running-tests)
+- [License](#license)
 
 ## Getting Started
 
@@ -70,9 +99,6 @@ Before using the library, ensure you have:
 	Please read [Ollama Support](#ollama) for more info about this!
 
 
-<details open>
-<summary> Chat </summary>
-
 ### Example for chatting with deepseek
 
 Even more examples are avilable [here](/examples/README.md)
@@ -114,8 +140,6 @@ func main() {
 	fmt.Println("Response:", response.Choices[0].Message.Content)
 }
 ```
-</details>
-
 ## More Examples:
 
 <details>
@@ -916,6 +940,16 @@ The tests are organized into several files and folders:
    # Example: Run only chat completion tests
    go test -v -run TestCreateChatCompletion ./...
    ```
+## Who Uses deepseek-go
+
+deepseek-go is trusted by **149+ projects** and counting.
+
+Notable dependents include [Ech0](https://github.com/lin-snow/Ech0) (1,900+ stars) and many others.
+
+[![Used by](https://img.shields.io/badge/used_by-149-blue)](https://github.com/cohesion-org/deepseek-go/network/dependents)
+
+*Using deepseek-go in your project? Open a PR to add your name here!*
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

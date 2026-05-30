@@ -176,7 +176,7 @@ func (c *Client) CreateFIMStreamCompletion(
 	request.Stream = true
 	req, err := utils.NewRequestBuilder(c.AuthToken).
 		SetBaseURL(baseURL).
-		SetPath("/completions"). //Note to maintianer: This is a really bad implementation with manual path insertion. Please create an issue.
+		SetPath("/completions"). //Note to maintainer: This is a really bad implementation with manual path insertion. Please create an issue.
 		SetBodyFromStruct(request).
 		BuildStream(ctx)
 
