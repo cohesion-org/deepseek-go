@@ -18,7 +18,7 @@ func MultiChat() {
 
 	// Round 1: First API call
 	response1, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: messages,
 	})
 	if err != nil {
@@ -39,7 +39,7 @@ func MultiChat() {
 	})
 
 	response2, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: messages,
 	})
 	if err != nil {

@@ -17,7 +17,7 @@ func TestHandleChatCompletionResponse(t *testing.T) {
 		ID:      "chat-123",
 		Object:  "chat.completion",
 		Created: 1677858242,
-		Model:   "deepseek-chat",
+		Model:   "deepseek-v4-flash",
 		Choices: []deepseek.Choice{
 			{
 				Index: 0,
@@ -50,7 +50,7 @@ func TestHandleChatCompletionResponse(t *testing.T) {
 					"id": "chat-123",
 					"object": "chat.completion",
 					"created": 1677858242,
-					"model": "deepseek-chat",
+					"model": "deepseek-v4-flash",
 					"choices": [{
 						"index": 0,
 						"message": {
@@ -76,7 +76,7 @@ func TestHandleChatCompletionResponse(t *testing.T) {
                     "id": "chat-456",
                     "object": "chat.completion",
                     "created": 1677858243,
-                    "model": "deepseek-chat",
+                    "model": "deepseek-v4-flash",
                     "choices": [{
                         "index": 0,
                         "message": {
@@ -97,7 +97,7 @@ func TestHandleChatCompletionResponse(t *testing.T) {
 				ID:      "chat-456",
 				Object:  "chat.completion",
 				Created: 1677858243,
-				Model:   "deepseek-chat",
+				Model:   "deepseek-v4-flash",
 				Choices: []deepseek.Choice{
 					{
 						Index: 0,
@@ -124,7 +124,7 @@ func TestHandleChatCompletionResponse(t *testing.T) {
                     "id": "chat-789",
                     "object": "chat.completion",
                     "created": 1677858244,
-                    "model": "deepseek-chat",
+                    "model": "deepseek-v4-flash",
                     "choices": [{
                         "index": 0,
                         "message": {
@@ -145,7 +145,7 @@ func TestHandleChatCompletionResponse(t *testing.T) {
 				ID:      "chat-789",
 				Object:  "chat.completion",
 				Created: 1677858244,
-				Model:   "deepseek-chat",
+				Model:   "deepseek-v4-flash",
 				Choices: []deepseek.Choice{
 					{
 						Index: 0,
@@ -251,7 +251,7 @@ func TestResponseStructureValidation(t *testing.T) {
 				"id": 123,
 				"object": "chat.completion",
 				"created": "invalid",
-				"model": "deepseek-chat",
+				"model": "deepseek-v4-flash",
 				"choices": [{"index": "zero"}],
 				"usage": {"prompt_tokens": "ten"}
 			}`))),

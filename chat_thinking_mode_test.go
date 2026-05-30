@@ -24,7 +24,7 @@ func TestThinkingModeCompletion(t *testing.T) {
 		{
 			name: "deep think chat model",
 			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeepSeekReasoner,
+				Model: deepseek.DeepSeekV4Pro,
 				Messages: []deepseek.ChatCompletionMessage{
 					{Role: deepseek.ChatMessageRoleUser, Content: "Should this AI system be allowed to make final diagnostic decisions without human oversight?"},
 				},
@@ -38,7 +38,7 @@ func TestThinkingModeCompletion(t *testing.T) {
 		{
 			name: "empty messages",
 			req: &deepseek.ChatCompletionRequest{
-				Model:    deepseek.DeepSeekReasoner,
+				Model:    deepseek.DeepSeekV4Pro,
 				Messages: []deepseek.ChatCompletionMessage{},
 			},
 			wantErr: true,

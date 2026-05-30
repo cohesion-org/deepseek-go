@@ -15,7 +15,7 @@ import (
 func Streaming() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 	request := &deepseek.StreamChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Just testing if the streaming feature is working or not!"},
 		},
@@ -51,7 +51,7 @@ func Streaming() {
 func StreamingWithReasoningContent() {
 	client := deepseek.NewClient(os.Getenv("DEEPSEEK_API_KEY"))
 	request := &deepseek.StreamChatCompletionRequest{
-		Model: deepseek.DeepSeekReasoner,
+		Model: deepseek.DeepSeekV4Pro,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Hello, how are you?"},
 		},

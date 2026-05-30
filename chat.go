@@ -47,6 +47,7 @@ type Function struct {
 	Name        string              `json:"name"`                 // The name of the function (required).
 	Description string              `json:"description"`          // A description of the function (required).
 	Parameters  *FunctionParameters `json:"parameters,omitempty"` // The parameters of the function (optional).
+	Strict      bool                `json:"strict,omitempty"`     // When true, uses the /beta base URL (optional).
 }
 
 // Tool defines the structure for a tool.
@@ -87,6 +88,8 @@ type ChatCompletionRequest struct {
 	LogProbs         bool                    `json:"logprobs,omitempty"`          // Whether to return log probabilities of the most likely tokens (optional).
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // The number of top most likely tokens to return log probabilities for (optional).
 	Thinking         *ThinkingConfig         `json:"thinking,omitempty"`          // Optional: Official DeepSeek thinking configuration.
+	ReasoningEffort  string                  `json:"reasoning_effort,omitempty"`
+	UserID           string                  `json:"user_id,omitempty"`
 	JSONMode         bool                    `json:"json,omitempty"`              // [deepseek-go feature] Optional: Enable JSON mode. If you're using the JSON mode, please mention "json" anywhere in your prompt, and also include the JSON schema in the request.
 	EnableThinking   bool                    `json:"enable_thinking,omitempty"`   // Legacy convenience flag. Library requests normalize this to top-level "thinking": {"type":"enabled"}.
 	ExtraFields      map[string]interface{}  `json:"extra_fields,omitempty"`      // Legacy passthrough fields. Library requests merge these into the top-level payload.

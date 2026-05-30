@@ -33,6 +33,8 @@ func NewMockDeepSeekServer(t *testing.T) *MockDeepSeekServer {
 					{"id": deepseek.DeepSeekChat, "object": "model", "owned_by": "deepseek"},
 					{"id": deepseek.DeepSeekReasoner, "object": "model", "owned_by": "deepseek"},
 					{"id": deepseek.DeepSeekCoder, "object": "model", "owned_by": "deepseek"},
+					{"id": deepseek.DeepSeekV4Flash, "object": "model", "owned_by": "deepseek"},
+					{"id": deepseek.DeepSeekV4Pro, "object": "model", "owned_by": "deepseek"},
 				},
 			})
 		case "/user/balance":
@@ -296,7 +298,7 @@ func writeMockChatStream(t *testing.T, w http.ResponseWriter, req mockChatReques
 
 func buildMockChatResult(req mockChatRequest) (content string, reasoning string, toolCalls []deepseek.ToolCall) {
 	lastUser := lastMessageContent(req.Messages, deepseek.ChatMessageRoleUser)
-	thinkingMode := req.Model == deepseek.DeepSeekReasoner || req.Thinking != nil
+	thinkingMode := req.Model == deepseek.DeepSeekReasoner || req.Model == deepseek.DeepSeekV4Pro || req.Thinking != nil
 	hasToolMessage := hasRole(req.Messages, deepseek.ChatMessageRoleTool)
 	hasPrefix := hasPrefixMessage(req.Messages)
 

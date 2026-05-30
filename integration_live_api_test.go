@@ -24,7 +24,7 @@ func TestIntegrationChatCompletion(t *testing.T) {
 	defer cancel()
 
 	resp, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: constants.ChatMessageRoleUser, Content: "Reply with exactly: integration-ok"},
 		},
@@ -44,7 +44,7 @@ func TestIntegrationChatCompletionStream(t *testing.T) {
 	defer cancel()
 
 	stream, err := client.CreateChatCompletionStream(ctx, &deepseek.StreamChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: constants.ChatMessageRoleUser, Content: "Say hello in one short sentence."},
 		},
@@ -104,7 +104,7 @@ func TestIntegrationFIMCompletion(t *testing.T) {
 	defer cancel()
 
 	resp, err := client.CreateFIMCompletion(ctx, &deepseek.FIMCompletionRequest{
-		Model:  deepseek.DeepSeekChat,
+		Model:  deepseek.DeepSeekV4Flash,
 		Prompt: "func main() {\n    fmt.Println(\"hel",
 	})
 	require.NoError(t, err)
@@ -122,7 +122,7 @@ func TestChatTool(t *testing.T) {
 	defer cancel()
 
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Tools: []deepseek.Tool{
 			{
 				Type: "function",

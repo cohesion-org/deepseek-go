@@ -113,6 +113,8 @@ type StreamChatCompletionRequest struct {
 	LogProbs         bool                    `json:"logprobs,omitempty"`          // Optional: Enable log probabilities
 	TopLogProbs      int                     `json:"top_logprobs,omitempty"`      // Optional: Number of top tokens with log probabilities, <= 20
 	Thinking         *ThinkingConfig         `json:"thinking,omitempty"`          // Optional: Official DeepSeek thinking configuration.
+	ReasoningEffort  string                  `json:"reasoning_effort,omitempty"`
+	UserID           string                  `json:"user_id,omitempty"`
 	EnableThinking   bool                    `json:"enable_thinking,omitempty"`   // Legacy convenience flag. Library requests normalize this to top-level "thinking": {"type":"enabled"}.
 	ExtraFields      map[string]interface{}  `json:"extra_fields,omitempty"`      // Legacy passthrough fields. Library requests merge these into the top-level payload.
 }

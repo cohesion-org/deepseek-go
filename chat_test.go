@@ -25,7 +25,7 @@ func TestCreateChatCompletion(t *testing.T) {
 		{
 			name: "basic completion",
 			req: &deepseek.ChatCompletionRequest{
-				Model: deepseek.DeepSeekChat,
+				Model: deepseek.DeepSeekV4Flash,
 				Messages: []deepseek.ChatCompletionMessage{
 					{Role: constants.ChatMessageRoleUser, Content: "Say hello!"},
 				},
@@ -38,7 +38,7 @@ func TestCreateChatCompletion(t *testing.T) {
 		{
 			name: "empty messages",
 			req: &deepseek.ChatCompletionRequest{
-				Model:    deepseek.DeepSeekChat,
+				Model:    deepseek.DeepSeekV4Flash,
 				Messages: []deepseek.ChatCompletionMessage{},
 			},
 			wantErr: true,
@@ -93,7 +93,7 @@ func TestMultiChatConversation(t *testing.T) {
 	// First round of conversation
 	t.Run("FirstResponse", func(t *testing.T) {
 		req := &deepseek.ChatCompletionRequest{
-			Model:    deepseek.DeepSeekChat,
+			Model:    deepseek.DeepSeekV4Flash,
 			Messages: messages,
 		}
 
@@ -104,7 +104,7 @@ func TestMultiChatConversation(t *testing.T) {
 
 		// Validate response structure
 		assert.Equal(t, "chat.completion", resp.Object)
-		assert.Equal(t, deepseek.DeepSeekChat, resp.Model)
+		assert.Equal(t, deepseek.DeepSeekV4Flash, resp.Model)
 		assert.NotZero(t, resp.Created)
 		assert.NotZero(t, resp.Usage.TotalTokens)
 
@@ -123,7 +123,7 @@ func TestMultiChatConversation(t *testing.T) {
 	// Second round of conversation
 	t.Run("SecondResponse", func(t *testing.T) {
 		req := &deepseek.ChatCompletionRequest{
-			Model:    deepseek.DeepSeekChat,
+			Model:    deepseek.DeepSeekV4Flash,
 			Messages: messages,
 		}
 
@@ -142,7 +142,7 @@ func TestMultiChatConversation(t *testing.T) {
 
 		// Validate response structure
 		assert.Equal(t, "chat.completion", resp.Object)
-		assert.Equal(t, deepseek.DeepSeekChat, resp.Model)
+		assert.Equal(t, deepseek.DeepSeekV4Flash, resp.Model)
 		assert.NotZero(t, resp.Created)
 		assert.NotZero(t, resp.Usage.TotalTokens)
 	})

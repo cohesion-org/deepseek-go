@@ -20,7 +20,7 @@ func TestCreateChatCompletionStream(t *testing.T) {
 	client := testutil.NewMockClient(t, server)
 
 	stream, err := client.CreateChatCompletionStream(context.Background(), &deepseek.StreamChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{
 				Role:    constants.ChatMessageRoleUser,
@@ -109,7 +109,7 @@ func streamChatCompletion(
 	messages []deepseek.ChatCompletionMessage,
 ) (string, error) {
 	req := &deepseek.StreamChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: messages,
 		Stream:   true,
 	}
@@ -136,7 +136,7 @@ func streamChatCompletion(
 
 		// Validate response structure
 		assert.Equal(t, "chat.completion.chunk", resp.Object)
-		assert.Equal(t, deepseek.DeepSeekChat, resp.Model)
+		assert.Equal(t, deepseek.DeepSeekV4Flash, resp.Model)
 		assert.NotEmpty(t, resp.ID)
 		assert.NotZero(t, resp.Created)
 
@@ -170,7 +170,7 @@ func TestStreamingWithToolCalls(t *testing.T) {
 	}
 
 	req := &deepseek.StreamChatCompletionRequest{
-		Model:    deepseek.DeepSeekChat,
+		Model:    deepseek.DeepSeekV4Flash,
 		Messages: message,
 		Stream:   true,
 		Tools: []deepseek.Tool{

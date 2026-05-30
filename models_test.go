@@ -30,13 +30,17 @@ func TestListAllModels(t *testing.T) {
 		assert.Equal(t, "deepseek", model.OwnedBy)
 
 		// Verify known models exist in constants.go
-		if model.ID == "deepseek-chat" ||
-			model.ID == "deepseek-coder" ||
-			model.ID == "deepseek-reasoner" {
+		if model.ID == deepseek.DeepSeekChat ||
+			model.ID == deepseek.DeepSeekCoder ||
+			model.ID == deepseek.DeepSeekReasoner ||
+			model.ID == deepseek.DeepSeekV4Flash ||
+			model.ID == deepseek.DeepSeekV4Pro {
 			assert.Contains(t, []string{
-				"deepseek-chat",
-				"deepseek-coder",
-				"deepseek-reasoner",
+				deepseek.DeepSeekChat,
+				deepseek.DeepSeekCoder,
+				deepseek.DeepSeekReasoner,
+				deepseek.DeepSeekV4Flash,
+				deepseek.DeepSeekV4Pro,
 			}, model.ID)
 		}
 	}

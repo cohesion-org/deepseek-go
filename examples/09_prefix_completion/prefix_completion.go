@@ -20,7 +20,7 @@ func ChatPrefix() {
 	ctx := context.Background()
 
 	request := &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Please write quick sort code"},
 			{Role: deepseek.ChatMessageRoleAssistant, Content: "```python\n", Prefix: true},
@@ -62,7 +62,7 @@ func ChatPrefixWithJsonMode() {
 	Example: {"isbn": "978-0321765723", "title": "The Lord of the Rings", "author": "J.R.R. Tolkien", "genre": "Fantasy", "publication_year": 1954, "available": true}`
 
 	resp, err := client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
-		Model: deepseek.DeepSeekChat,
+		Model: deepseek.DeepSeekV4Flash,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: prompt},
 			{Role: deepseek.ChatMessageRoleAssistant, Content: "```json\n", Prefix: true},

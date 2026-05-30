@@ -11,9 +11,13 @@ import (
 
 // Official DeepSeek Models
 const (
-	DeepSeekChat     = "deepseek-chat"     // DeepSeekChat is the official model for chat completions
-	DeepSeekCoder    = "deepseek-coder"    // DeepSeekCoder has been combined with DeepSeekChat, but you can still use it. Please read: https://api-docs.deepseek.com/updates#version-2024-09-05
-	DeepSeekReasoner = "deepseek-reasoner" // DeepSeekReasoner is the official model for reasoning completions
+	DeepSeekChat     = "deepseek-chat"     // Deprecated: Use DeepSeekV4Flash instead. Will be removed 2026/07/24.
+	DeepSeekCoder    = "deepseek-coder"    // Deprecated: Use DeepSeekV4Flash instead. Will be removed 2026/07/24.
+	DeepSeekReasoner = "deepseek-reasoner" // Deprecated: Use DeepSeekV4Flash instead. Will be removed 2026/07/24.
+
+	// Current models (V4)
+	DeepSeekV4Flash = "deepseek-v4-flash"
+	DeepSeekV4Pro   = "deepseek-v4-pro"
 )
 
 // External Models that can be used with the API

@@ -28,8 +28,13 @@ func (c *Client) CreateChatCompletion(
 	}
 	defer tcancel()
 
+	baseURL := c.BaseURL
+	if hasStrictTool(request.Tools) {
+		baseURL = resolveBetaBaseURL(c.BaseURL)
+	}
+
 	req, err := utils.NewRequestBuilder(c.AuthToken).
-		SetBaseURL(c.BaseURL).
+		SetBaseURL(baseURL).
 		SetPath(c.Path).
 		SetBodyFromStruct(payload).
 		Build(ctx)
@@ -78,8 +83,14 @@ func (c *Client) CreateChatCompletionStream(
 	if err != nil {
 		return nil, fmt.Errorf("error normalizing request payload: %w", err)
 	}
+
+	baseURL := c.BaseURL
+	if hasStrictTool(request.Tools) {
+		baseURL = resolveBetaBaseURL(c.BaseURL)
+	}
+
 	req, err := utils.NewRequestBuilder(c.AuthToken).
-		SetBaseURL(c.BaseURL).
+		SetBaseURL(baseURL).
 		SetPath(c.Path).
 		SetBodyFromStruct(payload).
 		BuildStream(ctx)
@@ -181,4 +192,14 @@ func (c *Client) CreateFIMStreamCompletion(
 		reader: bufio.NewReader(resp.Body),
 	}
 	return stream, nil
+}
+
+
+func hasStrictTool(tools []Tool) bool {
+	for _, t := range tools {
+		if t.Function.Strict {
+			return true
+		}
+	}
+	return false
 }
