@@ -23,6 +23,10 @@ func ExternalProviders() {
 	// OpenRouter
 	// baseURL := "https://openrouter.ai/api/v1/"
 
+	// Requesty (OpenAI-compatible gateway, https://requesty.ai)
+	// baseURL := "https://router.requesty.ai/v1/"
+	// then: Model: deepseek.RequestyDeepSeekV4Flash
+
 	// Set up the Deepseek client
 	client := deepseek.NewClient(os.Getenv("PROVIDER_API_KEY"), baseURL)
 
