@@ -33,7 +33,7 @@ deepseek-go currently uses `go 1.26.0`
 - **Tool Calling**: Function calling with standard and strict mode (beta, with automatic `/beta` routing).
 - **FIM Completion**: Fill-in-the-Middle completions for code generation, with streaming.
 - **JSON Output**: Structured JSON output with schema extraction via `ResponseFormat`.
-- **External Providers**: OpenRouter, Azure, Ollama, and any OpenAI-compatible endpoint.
+- **External Providers**: OpenRouter, Requesty, Azure, Ollama, and any OpenAI-compatible endpoint.
 - **Balance & Models**: Check account balance and list available models.
 - **Token Estimation**: Client-side token counting for Chinese and English text.
 - **Modular Design**: Reusable components for building, sending, and handling requests and responses.
@@ -91,6 +91,10 @@ Before using the library, ensure you have:
 - **OpenRouter** <br/>
 	OpenRouter provides access to DeepSeek R1 and distill models. <br/>
 	Usage: `Model: deepseek.OpenRouterDeepSeekR1` (and other `OpenRouterDeepSeek*` constants)
+
+- **Requesty** <br/>
+	[Requesty](https://requesty.ai) is an OpenAI-compatible gateway. Set the client baseURL to `https://router.requesty.ai/v1/` and use a Requesty API key. <br/>
+	Usage: `Model: deepseek.RequestyDeepSeekV4Flash` (and `deepseek.RequestyDeepSeekChat`)
 
 - **Ollama Support** <br/>
 	Please read [Ollama Support](#ollama) for more info about this!

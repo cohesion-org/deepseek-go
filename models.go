@@ -29,6 +29,12 @@ const (
 	OpenRouterDeepSeekR1DistillQwen14B  = "deepseek/deepseek-r1-distill-qwen-14b"  // DeepSeek R1 Distill Qwen 14B
 	OpenRouterDeepSeekR1DistillQwen1_5B = "deepseek/deepseek-r1-distill-qwen-1.5b" // DeepSeek R1 Distill Qwen 1.5B
 	OpenRouterDeepSeekR1DistillQwen32B  = "deepseek/deepseek-r1-distill-qwen-32b"  // DeepSeek R1 Distill Qwen 32B
+
+	// Requesty (https://requesty.ai) is an OpenAI-compatible gateway; set the
+	// client baseURL to "https://router.requesty.ai/v1/" and authenticate with a
+	// Requesty API key. Models use the provider/model naming convention.
+	RequestyDeepSeekChat    = "deepseek/deepseek-chat"     // Requesty model for DeepSeek (chat)
+	RequestyDeepSeekV4Flash = "deepseek/deepseek-v4-flash" // Requesty model for DeepSeek V4 Flash
 )
 
 // Model represents a model that can be used with the API
