@@ -29,6 +29,7 @@ const (
 	OpenRouterDeepSeekR1DistillQwen14B  = "deepseek/deepseek-r1-distill-qwen-14b"  // DeepSeek R1 Distill Qwen 14B
 	OpenRouterDeepSeekR1DistillQwen1_5B = "deepseek/deepseek-r1-distill-qwen-1.5b" // DeepSeek R1 Distill Qwen 1.5B
 	OpenRouterDeepSeekR1DistillQwen32B  = "deepseek/deepseek-r1-distill-qwen-32b"  // DeepSeek R1 Distill Qwen 32B
+	MiniMaxM3                           = "MiniMax-M3"                             // MiniMax M3 via the OpenAI-compatible endpoint (https://api.minimax.io/v1/)
 )
 
 // Model represents a model that can be used with the API
