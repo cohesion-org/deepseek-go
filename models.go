@@ -33,8 +33,8 @@ const (
 	MiniMaxM2_7                         = "MiniMax-M2.7"
 	MiniMaxBaseURL                      = "https://api.minimax.io/v1/"
 	MiniMaxCNBaseURL                    = "https://api.minimaxi.com/v1/"
-	MiniMaxAnthropicAPIBaseURL          = "https://api.minimax.io/anthropic/v1/"
-	MiniMaxCNAnthropicAPIBaseURL        = "https://api.minimaxi.com/anthropic/v1/"
+	MiniMaxAnthropicAPIBaseURL          = "https://api.minimax.io/anthropic"
+	MiniMaxCNAnthropicAPIBaseURL        = "https://api.minimaxi.com/anthropic"
 )
 
 // Model represents a model that can be used with the API

@@ -96,7 +96,7 @@ Before using the library, ensure you have:
 	Models: `deepseek.MiniMaxM3`, `deepseek.MiniMaxM2_7` <br/>
 	OpenAI-compatible API: `deepseek.MiniMaxBaseURL` (global), `deepseek.MiniMaxCNBaseURL` (China) <br/>
 	Anthropic-compatible API: `deepseek.MiniMaxAnthropicAPIBaseURL` (global), `deepseek.MiniMaxCNAnthropicAPIBaseURL` (China) <br/>
-	When using `NewAnthropicClient`, set `Path` to `"messages"` with an Anthropic-compatible API base URL.
+	When using `NewAnthropicClient`, set `Path` to `"/v1/messages"` with an Anthropic-compatible API base URL.
 
 - **Ollama Support** <br/>
 	Please read [Ollama Support](#ollama) for more info about this!
