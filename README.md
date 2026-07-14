@@ -92,6 +92,12 @@ Before using the library, ensure you have:
 	OpenRouter provides access to DeepSeek R1 and distill models. <br/>
 	Usage: `Model: deepseek.OpenRouterDeepSeekR1` (and other `OpenRouterDeepSeek*` constants)
 
+- **MiniMax** <br/>
+	Models: `deepseek.MiniMaxM3`, `deepseek.MiniMaxM2_7` <br/>
+	OpenAI-compatible API: `deepseek.MiniMaxBaseURL` (global), `deepseek.MiniMaxCNBaseURL` (China) <br/>
+	Anthropic-compatible API: `deepseek.MiniMaxAnthropicAPIBaseURL` (global), `deepseek.MiniMaxCNAnthropicAPIBaseURL` (China) <br/>
+	When using `NewAnthropicClient`, set `Path` to `"/v1/messages"` with an Anthropic-compatible API base URL.
+
 - **Ollama Support** <br/>
 	Please read [Ollama Support](#ollama) for more info about this!
 
@@ -162,6 +168,12 @@ func main() {
 	// OpenRouter
 	// baseURL := "https://openrouter.ai/api/v1/"
 
+	// MiniMax (global)
+	// baseURL := deepseek.MiniMaxBaseURL
+
+	// MiniMax (China)
+	// baseURL := deepseek.MiniMaxCNBaseURL
+
 	// Set up the Deepseek client
     client := deepseek.NewClient(os.Getenv("PROVIDER_API_KEY"), baseURL)
 
@@ -169,6 +181,8 @@ func main() {
 	request := &deepseek.ChatCompletionRequest{
 		Model: deepseek.AzureDeepSeekR1,
 		// Model: deepseek.OpenRouterDeepSeekR1,
+		// Model: deepseek.MiniMaxM3,
+		// Model: deepseek.MiniMaxM2_7,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
 		},

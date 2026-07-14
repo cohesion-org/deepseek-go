@@ -23,6 +23,12 @@ func ExternalProviders() {
 	// OpenRouter
 	// baseURL := "https://openrouter.ai/api/v1/"
 
+	// MiniMax (global)
+	// baseURL := deepseek.MiniMaxBaseURL
+
+	// MiniMax (China)
+	// baseURL := deepseek.MiniMaxCNBaseURL
+
 	// Set up the Deepseek client
 	client := deepseek.NewClient(os.Getenv("PROVIDER_API_KEY"), baseURL)
 
@@ -30,6 +36,8 @@ func ExternalProviders() {
 	request := &deepseek.ChatCompletionRequest{
 		Model: deepseek.AzureDeepSeekR1,
 		// Model: deepseek.OpenRouterDeepSeekR1,
+		// Model: deepseek.MiniMaxM3,
+		// Model: deepseek.MiniMaxM2_7,
 		Messages: []deepseek.ChatCompletionMessage{
 			{Role: deepseek.ChatMessageRoleUser, Content: "Which is the tallest mountain in the world?"},
 		},
